@@ -3,6 +3,7 @@ import StarterKit from '@tiptap/starter-kit';
 import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import Mathematics from '@tiptap/extension-mathematics';
 import { createLowlight } from 'lowlight';
 import { useState } from 'react';
 import { 
@@ -21,7 +22,8 @@ import {
   Redo,
   ImageIcon,
   Palette,
-  Type
+  Type,
+  Calculator
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -54,6 +56,7 @@ const highlightColors = [
 
 const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }: RichTextEditorProps) => {
   const [imageUrl, setImageUrl] = useState('');
+  const [equationInput, setEquationInput] = useState('');
 
   const editor = useEditor({
     extensions: [
@@ -72,6 +75,11 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
         lowlight: createLowlight(),
         HTMLAttributes: {
           class: 'bg-muted p-4 rounded-lg font-mono text-sm',
+        },
+      }),
+      Mathematics.configure({
+        katexOptions: {
+          throwOnError: false,
         },
       }),
     ],
@@ -95,6 +103,13 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
     if (imageUrl) {
       editor.chain().focus().setImage({ src: imageUrl }).run();
       setImageUrl('');
+    }
+  };
+
+  const addEquation = () => {
+    if (equationInput) {
+      editor.chain().focus().insertContent(`$${equationInput}$`).run();
+      setEquationInput('');
     }
   };
 
@@ -253,6 +268,36 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
           >
             <Code className="h-4 w-4" />
           </ToolbarButton>
+
+          {/* Equation */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="h-8">
+                <Calculator className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-80">
+              <div className="p-3">
+                <div className="mb-2 text-sm font-medium">Insert Equation</div>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="LaTeX equation (e.g., E = mc^2)"
+                    value={equationInput}
+                    onChange={(e) => setEquationInput(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && addEquation()}
+                  />
+                  <Button onClick={addEquation} size="sm">
+                    Add
+                  </Button>
+                </div>
+                <div className="mt-2 text-xs text-muted-foreground">
+                  Examples: x^2, \frac&#123;1&#125;&#123;2&#125;, \sum_&#123;n=1&#125;^&#123;\infty&#125;, \alpha + \beta
+                </div>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Separator orientation="vertical" className="h-6" />
 
           {/* Image */}
           <DropdownMenu>
