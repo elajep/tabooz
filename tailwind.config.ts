@@ -61,7 +61,35 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				notion: {
+					red: 'hsl(var(--notion-red))',
+					orange: 'hsl(var(--notion-orange))',
+					yellow: 'hsl(var(--notion-yellow))',
+					green: 'hsl(var(--notion-green))',
+					blue: 'hsl(var(--notion-blue))',
+					purple: 'hsl(var(--notion-purple))',
+					pink: 'hsl(var(--notion-pink))',
+					gray: 'hsl(var(--notion-gray))'
+				},
+				editor: {
+					bg: 'hsl(var(--editor-bg))',
+					sidebar: 'hsl(var(--editor-sidebar))'
+				},
+				hover: 'hsl(var(--hover-bg))',
+				selection: 'hsl(var(--selection-bg))'
+			},
+			backgroundImage: {
+				'gradient-primary': 'var(--gradient-primary)',
+				'gradient-subtle': 'var(--gradient-subtle)'
+			},
+			boxShadow: {
+				'sm': 'var(--shadow-sm)',
+				'md': 'var(--shadow-md)',
+				'lg': 'var(--shadow-lg)'
+			},
+			transitionTimingFunction: {
+				'smooth': 'var(--transition-smooth)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
