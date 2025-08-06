@@ -3,7 +3,7 @@ import StarterKit from '@tiptap/starter-kit';
 import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
-import { Equation } from './EquationExtension';
+import Mathematics from '@tiptap/extension-mathematics';
 import { createLowlight } from 'lowlight';
 import { useState } from 'react';
 import { 
@@ -77,9 +77,9 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
           class: 'bg-muted p-4 rounded-lg font-mono text-sm',
         },
       }),
-      Equation.configure({
-        HTMLAttributes: {
-          class: 'math-equation',
+      Mathematics.configure({
+        katexOptions: {
+          throwOnError: false,
         },
       }),
     ],
@@ -108,7 +108,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
   const addEquation = () => {
     if (equationInput) {
-      editor.chain().focus().setEquation({ equation: equationInput }).run();
+      editor.chain().focus().insertContent(`$$${equationInput}$$`).run();
       setEquationInput('');
     }
   };
