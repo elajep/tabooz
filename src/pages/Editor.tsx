@@ -137,11 +137,6 @@ const Editor = () => {
                 checked={isReadOnly}
                 onCheckedChange={setIsReadOnly}
               />
-              {isReadOnly ? (
-                <Eye className="w-4 h-4 text-muted-foreground" />
-              ) : (
-                <Edit3 className="w-4 h-4 text-muted-foreground" />
-              )}
             </div>
 
             <Button
