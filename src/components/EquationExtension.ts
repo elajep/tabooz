@@ -50,13 +50,14 @@ export const Equation = Node.create<EquationOptions>({
     ];
   },
 
-  renderHTML({ HTMLAttributes }) {
+  renderHTML({ HTMLAttributes, node }) {
     return [
       'span',
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
         class: 'math-equation',
+        'data-equation': node.attrs.equation,
       }),
-      `$${HTMLAttributes.equation}$`,
+      `$${node.attrs.equation}$`,
     ];
   },
 
