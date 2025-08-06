@@ -145,3 +145,12 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom blockquote styling */
+.ProseMirror blockquote {
+  background-color: hsl(0 100% 50% / 0.1);
+  border-left: 4px solid hsl(0 100% 50%);
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+}

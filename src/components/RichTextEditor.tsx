@@ -9,8 +9,8 @@ import { useState } from 'react';
 import { 
   Bold, 
   Italic, 
-  Underline, 
-  Strikethrough, 
+  Highlighter, 
+  Strikethrough,
   Code, 
   Heading1, 
   Heading2, 
@@ -172,6 +172,13 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
             isActive={editor.isActive('strike')}
           >
             <Strikethrough className="h-4 w-4" />
+          </ToolbarButton>
+          
+          <ToolbarButton
+            onClick={() => editor.chain().focus().toggleHighlight().run()}
+            isActive={editor.isActive('highlight')}
+          >
+            <Highlighter className="h-4 w-4" />
           </ToolbarButton>
           
           <ToolbarButton

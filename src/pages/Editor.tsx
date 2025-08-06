@@ -98,8 +98,7 @@ const Editor = () => {
           <div className="flex items-center gap-4 flex-1">
             <Link to="/documents">
               <Button variant="ghost" size="sm">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
+                <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
             
@@ -139,14 +138,6 @@ const Editor = () => {
               />
             </div>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleShare}
-            >
-              <Share2 className="w-4 h-4 mr-2" />
-              Share
-            </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
