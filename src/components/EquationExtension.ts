@@ -53,25 +53,36 @@ export const Equation = Node.create<EquationOptions>({
 
   renderHTML({ node }) {
     const equation = node.attrs.equation || '';
-    let renderedEquation = '';
     
-    try {
-      renderedEquation = katex.renderToString(equation, {
-        throwOnError: false,
-        displayMode: false,
-      });
-    } catch (error) {
-      renderedEquation = `$${equation}$`;
-    }
-
     return [
       'span',
       mergeAttributes(this.options.HTMLAttributes, {
         class: 'math-equation',
         'data-equation': equation,
       }),
-      ['span', { innerHTML: renderedEquation }],
+      `$${equation}$`,
     ];
+  },
+
+  addNodeView() {
+    return ({ node, HTMLAttributes }) => {
+      const span = document.createElement('span');
+      span.className = 'math-equation';
+      span.setAttribute('data-equation', node.attrs.equation);
+      
+      try {
+        span.innerHTML = katex.renderToString(node.attrs.equation, {
+          throwOnError: false,
+          displayMode: false,
+        });
+      } catch (error) {
+        span.textContent = `$${node.attrs.equation}$`;
+      }
+      
+      return {
+        dom: span,
+      };
+    };
   },
 
   addCommands() {
