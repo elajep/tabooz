@@ -1,4 +1,5 @@
 import { Node, mergeAttributes } from '@tiptap/core';
+import katex from 'katex';
 
 export interface EquationOptions {
   HTMLAttributes: Record<string, any>;
@@ -50,14 +51,26 @@ export const Equation = Node.create<EquationOptions>({
     ];
   },
 
-  renderHTML({ HTMLAttributes, node }) {
+  renderHTML({ node }) {
+    const equation = node.attrs.equation || '';
+    let renderedEquation = '';
+    
+    try {
+      renderedEquation = katex.renderToString(equation, {
+        throwOnError: false,
+        displayMode: false,
+      });
+    } catch (error) {
+      renderedEquation = `$${equation}$`;
+    }
+
     return [
       'span',
-      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+      mergeAttributes(this.options.HTMLAttributes, {
         class: 'math-equation',
-        'data-equation': node.attrs.equation,
+        'data-equation': equation,
       }),
-      `$${node.attrs.equation}$`,
+      ['span', { innerHTML: renderedEquation }],
     ];
   },
 
