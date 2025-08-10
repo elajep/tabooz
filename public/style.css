@@ -1,0 +1,95 @@
+/* Global Custom Styles - Modify this file to customize your app */
+
+/* Heading Styles */
+h1, .ProseMirror h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 1.5rem 0 1rem 0;
+  color: #1a202c;
+}
+
+h2, .ProseMirror h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 1.25rem 0 0.75rem 0;
+  color: #2d3748;
+}
+
+h3, .ProseMirror h3 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 1rem 0 0.5rem 0;
+  color: #4a5568;
+}
+
+/* Paragraph Styles */
+p, .ProseMirror p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0.75rem 0;
+  color: #2d3748;
+}
+
+/* Link Styles */
+a {
+  color: #3182ce;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #2c5aa0;
+}
+
+/* Button Styles */
+button {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+/* Custom Editor Styles */
+.ProseMirror {
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  h1, .ProseMirror h1 {
+    color: #f7fafc;
+  }
+  
+  h2, .ProseMirror h2 {
+    color: #e2e8f0;
+  }
+  
+  h3, .ProseMirror h3 {
+    color: #cbd5e0;
+  }
+  
+  p, .ProseMirror p {
+    color: #e2e8f0;
+  }
+}
+
+/* Text Alignment Classes */
+.text-left {
+  text-align: left !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+.text-justify {
+  text-align: justify !important;
+}
+
+/* You can add more custom styles here */

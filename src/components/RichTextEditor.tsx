@@ -4,6 +4,7 @@ import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import Mathematics from '@tiptap/extension-mathematics';
+import TextAlign from '@tiptap/extension-text-align';
 import { createLowlight, all } from 'lowlight';
 import { useState } from 'react';
 import { 
@@ -24,7 +25,11 @@ import {
   Palette,
   Type,
   Calculator,
-  FileCode
+  FileCode,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -67,7 +72,15 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
         codeBlock: false, // We'll use CodeBlockLowlight instead
         heading: {
           levels: [1, 2, 3],
+          HTMLAttributes: {
+            class: 'heading-style',
+          },
         },
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+        alignments: ['left', 'center', 'right', 'justify'],
+        defaultAlignment: 'left',
       }),
       Highlight.configure({
         multicolor: true,
@@ -245,6 +258,37 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
             isActive={editor.isActive('blockquote')}
           >
             <Quote className="h-4 w-4" />
+          </ToolbarButton>
+
+          <Separator orientation="vertical" className="h-6" />
+
+          {/* Text Alignment */}
+          <ToolbarButton
+            onClick={() => editor.chain().focus().setTextAlign('left').run()}
+            isActive={editor.isActive({ textAlign: 'left' })}
+          >
+            <AlignLeft className="h-4 w-4" />
+          </ToolbarButton>
+          
+          <ToolbarButton
+            onClick={() => editor.chain().focus().setTextAlign('center').run()}
+            isActive={editor.isActive({ textAlign: 'center' })}
+          >
+            <AlignCenter className="h-4 w-4" />
+          </ToolbarButton>
+          
+          <ToolbarButton
+            onClick={() => editor.chain().focus().setTextAlign('right').run()}
+            isActive={editor.isActive({ textAlign: 'right' })}
+          >
+            <AlignRight className="h-4 w-4" />
+          </ToolbarButton>
+          
+          <ToolbarButton
+            onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+            isActive={editor.isActive({ textAlign: 'justify' })}
+          >
+            <AlignJustify className="h-4 w-4" />
           </ToolbarButton>
 
           <Separator orientation="vertical" className="h-6" />
