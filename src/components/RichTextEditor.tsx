@@ -23,7 +23,8 @@ import {
   ImageIcon,
   Palette,
   Type,
-  Calculator
+  Calculator,
+  FileCode
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -35,6 +36,7 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface RichTextEditorProps {
   content: string;
@@ -57,11 +59,15 @@ const highlightColors = [
 const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }: RichTextEditorProps) => {
   const [imageUrl, setImageUrl] = useState('');
   const [equationInput, setEquationInput] = useState('');
+  const [codeLanguage, setCodeLanguage] = useState('javascript');
 
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
         codeBlock: false, // We'll use CodeBlockLowlight instead
+        heading: {
+          levels: [1, 2, 3],
+        },
       }),
       Highlight.configure({
         multicolor: true,
@@ -73,8 +79,9 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       }),
       CodeBlockLowlight.configure({
         lowlight: createLowlight(),
+        defaultLanguage: 'javascript',
         HTMLAttributes: {
-          class: 'bg-muted p-4 rounded-lg font-mono text-sm',
+          class: 'bg-muted p-4 rounded-lg font-mono text-sm border-l-4 border-primary',
         },
       }),
       Mathematics.configure({
@@ -111,6 +118,10 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       editor.chain().focus().insertContent(`$$${equationInput}$$`).run();
       setEquationInput('');
     }
+  };
+
+  const addCodeBlock = () => {
+    editor.chain().focus().setCodeBlock({ language: codeLanguage }).run();
   };
 
   const setHighlight = (color: string) => {
@@ -269,12 +280,40 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
           <Separator orientation="vertical" className="h-6" />
 
           {/* Code Block */}
-          <ToolbarButton
-            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-            isActive={editor.isActive('codeBlock')}
-          >
-            <Code className="h-4 w-4" />
-          </ToolbarButton>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="h-8">
+                <FileCode className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-60">
+              <div className="p-3">
+                <div className="mb-2 text-sm font-medium">Insert Code Block</div>
+                <div className="space-y-2">
+                  <Select value={codeLanguage} onValueChange={setCodeLanguage}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select language" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="javascript">JavaScript</SelectItem>
+                      <SelectItem value="typescript">TypeScript</SelectItem>
+                      <SelectItem value="python">Python</SelectItem>
+                      <SelectItem value="java">Java</SelectItem>
+                      <SelectItem value="cpp">C++</SelectItem>
+                      <SelectItem value="html">HTML</SelectItem>
+                      <SelectItem value="css">CSS</SelectItem>
+                      <SelectItem value="json">JSON</SelectItem>
+                      <SelectItem value="sql">SQL</SelectItem>
+                      <SelectItem value="bash">Bash</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button onClick={addCodeBlock} size="sm" className="w-full">
+                    Insert Code Block
+                  </Button>
+                </div>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           {/* Equation */}
           <DropdownMenu>
