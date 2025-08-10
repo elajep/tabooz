@@ -154,3 +154,21 @@ All colors MUST be HSL.
   margin: 1rem 0;
   border-radius: 0.5rem;
 }
+
+/* Syntax highlighting for code blocks */
+.ProseMirror pre code .hljs-keyword { color: #d73a49; }
+.ProseMirror pre code .hljs-string { color: #032f62; }
+.ProseMirror pre code .hljs-comment { color: #6a737d; font-style: italic; }
+.ProseMirror pre code .hljs-number { color: #005cc5; }
+.ProseMirror pre code .hljs-function { color: #6f42c1; }
+.ProseMirror pre code .hljs-variable { color: #e36209; }
+.ProseMirror pre code .hljs-title { color: #6f42c1; font-weight: bold; }
+.ProseMirror pre code .hljs-params { color: #24292e; }
+.ProseMirror pre code .hljs-built_in { color: #005cc5; }
+.ProseMirror pre code .hljs-tag { color: #22863a; }
+.ProseMirror pre code .hljs-attr { color: #6f42c1; }
+.ProseMirror pre code .hljs-attribute { color: #6f42c1; }
+.ProseMirror pre code .hljs-doctag { color: #d73a49; }
+.ProseMirror pre code .hljs-selector-tag { color: #22863a; }
+.ProseMirror pre code .hljs-selector-class { color: #6f42c1; }
+.ProseMirror pre code .hljs-selector-id { color: #005cc5; }

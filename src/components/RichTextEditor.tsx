@@ -4,7 +4,7 @@ import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import Mathematics from '@tiptap/extension-mathematics';
-import { createLowlight } from 'lowlight';
+import { createLowlight, all } from 'lowlight';
 import { useState } from 'react';
 import { 
   Bold, 
@@ -78,7 +78,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
         },
       }),
       CodeBlockLowlight.configure({
-        lowlight: createLowlight(),
+        lowlight: createLowlight(all),
         defaultLanguage: 'javascript',
         HTMLAttributes: {
           class: 'bg-muted p-4 rounded-lg font-mono text-sm border-l-4 border-primary',
