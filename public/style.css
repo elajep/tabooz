@@ -103,17 +103,6 @@ p code {
 /* =========================
    TEXT ALIGN CLASSES
 ========================= */
-.text-left {
-  text-align: left !important;
-}
-
-.text-center {
-  text-align: center !important;
-}
-
-.text-right {
-  text-align: right !important;
-}
 
 .text-justify,
 .ProseMirror .text-justify {
@@ -130,6 +119,20 @@ p code {
   white-space: normal !important;
   display: block !important;
 }
+
+.text-left {
+  text-align: left !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+
 
 /* =========================
    DARK MODE
