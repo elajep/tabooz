@@ -7,9 +7,11 @@ import { documentStore } from '@/lib/document-store';
 const Index = () => {
   const navigate = useNavigate();
 
-  const handleStartWriting = () => {
-    const newDoc = documentStore.createDocument();
-    navigate(`/editor/${newDoc.id}`);
+  const handleStartWriting = async () => {
+    const newDoc = await documentStore.createDocument();
+    if (newDoc) {
+      navigate(`/editor/${newDoc.id}`);
+    }
   };
 
   const features = [

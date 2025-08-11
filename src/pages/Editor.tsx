@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Eye, Edit3, Share2, MoreHorizontal } from 'lucide-react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -13,46 +13,43 @@ import {
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
 import { toast } from '@/hooks/use-toast';
-import { documentStore, type Document } from '@/lib/document-store';
+import { useDocument } from '@/hooks/use-document';
 import RichTextEditor from '@/components/RichTextEditor';
 
 const Editor = () => {
   const { id } = useParams<{ id: string }>();
-  const [document, setDocument] = useState<Document | null>(null);
+  const navigate = useNavigate();
+  const { document, loading, saving, updateDocument, deleteDocument } = useDocument(id);
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [isEditingTitle, setIsEditingTitle] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      const doc = documentStore.getDocument(id);
-      if (doc) {
-        setDocument(doc);
-        setTitle(doc.title);
-        setContent(doc.content);
-      } else {
-        toast({
-          title: "Document not found",
-          description: "The document you're looking for doesn't exist.",
-          variant: "destructive"
-        });
-      }
-    }
-  }, [id]);
-
-  const handleTitleChange = (newTitle: string) => {
-    setTitle(newTitle);
     if (document) {
-      documentStore.updateDocument(document.id, { title: newTitle });
+      setTitle(document.title);
+      setContent(document.content);
     }
+  }, [document]);
+
+  useEffect(() => {
+    if (!loading && !document && id) {
+      toast({
+        title: "Document not found",
+        description: "The document you're looking for doesn't exist.",
+        variant: "destructive"
+      });
+    }
+  }, [loading, document, id]);
+
+  const handleTitleChange = async (newTitle: string) => {
+    setTitle(newTitle);
+    await updateDocument({ title: newTitle });
   };
 
-  const handleContentChange = (newContent: string) => {
+  const handleContentChange = async (newContent: string) => {
     setContent(newContent);
-    if (document) {
-      documentStore.updateDocument(document.id, { content: newContent });
-    }
+    await updateDocument({ content: newContent });
   };
 
   const handleTitleSubmit = () => {
@@ -72,19 +69,35 @@ const Editor = () => {
     });
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (document && window.confirm('Are you sure you want to delete this document?')) {
-      documentStore.deleteDocument(document.id);
-      window.location.href = '/documents';
+      const success = await deleteDocument();
+      if (success) {
+        navigate('/documents');
+      }
     }
   };
 
-  if (!document) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">Loading document...</h2>
           <p className="text-muted-foreground">Please wait while we load your document.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!document) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-2">Document not found</h2>
+          <p className="text-muted-foreground">The document you're looking for doesn't exist.</p>
+          <Link to="/documents" className="mt-4 inline-block">
+            <Button>Back to Documents</Button>
+          </Link>
         </div>
       </div>
     );
@@ -129,7 +142,7 @@ const Editor = () => {
             {/* Read-only toggle */}
             <div className="flex items-center gap-2">
               <Label htmlFor="readonly-toggle" className="text-sm font-medium">
-                {isReadOnly ? 'Read-only' : 'Editing'}
+                {isReadOnly ? 'Read-only' : saving ? 'Saving...' : 'Editing'}
               </Label>
               <Switch
                 id="readonly-toggle"

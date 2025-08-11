@@ -1,153 +1,132 @@
-// Simple in-memory document store (in a real app, this would be a database)
+import { supabase } from "@/integrations/supabase/client";
+
 export interface Document {
   id: string;
   title: string;
   content: string;
-  createdAt: Date;
-  updatedAt: Date;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DocumentInsert {
+  title?: string;
+  content?: string;
+}
+
+export interface DocumentUpdate {
+  title?: string;
+  content?: string;
 }
 
 class DocumentStore {
-  private documents: Document[] = [
-    {
-      id: '1',
-      title: 'Welcome to Your Notion-like Editor',
-      content: JSON.stringify({
-        type: 'doc',
-        content: [
-          {
-            type: 'heading',
-            attrs: { level: 1 },
-            content: [{ type: 'text', text: 'Welcome to Your Notion-like Editor' }]
-          },
-          {
-            type: 'paragraph',
+  async getAllDocuments(): Promise<Document[]> {
+    try {
+      const { data, error } = await (supabase as any)
+        .from('documents')
+        .select('*')
+        .order('updated_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching documents:', error);
+        throw error;
+      }
+
+      return data || [];
+    } catch (error) {
+      console.error('Failed to fetch documents:', error);
+      return [];
+    }
+  }
+
+  async getDocument(id: string): Promise<Document | null> {
+    try {
+      const { data, error } = await (supabase as any)
+        .from('documents')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error fetching document:', error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Failed to fetch document:', error);
+      return null;
+    }
+  }
+
+  async createDocument(title: string = 'Untitled'): Promise<Document | null> {
+    try {
+      const { data, error } = await (supabase as any)
+        .from('documents')
+        .insert({
+          title,
+          content: JSON.stringify({
+            type: 'doc',
             content: [
-              { type: 'text', text: 'This is a powerful document editor that supports ' },
-              { type: 'text', marks: [{ type: 'bold' }], text: 'rich text formatting' },
-              { type: 'text', text: ', ' },
-              { type: 'text', marks: [{ type: 'highlight', attrs: { color: '#ffeb3b' } }], text: 'highlights' },
-              { type: 'text', text: ', equations, citations, and much more!' }
-            ]
-          },
-          {
-            type: 'heading',
-            attrs: { level: 2 },
-            content: [{ type: 'text', text: 'Features' }]
-          },
-          {
-            type: 'bulletList',
-            content: [
               {
-                type: 'listItem',
-                content: [
-                  {
-                    type: 'paragraph',
-                    content: [{ type: 'text', text: 'Rich text editing with formatting options' }]
-                  }
-                ]
-              },
-              {
-                type: 'listItem',
-                content: [
-                  {
-                    type: 'paragraph',
-                    content: [{ type: 'text', text: 'Code blocks with syntax highlighting' }]
-                  }
-                ]
-              },
-              {
-                type: 'listItem',
-                content: [
-                  {
-                    type: 'paragraph',
-                    content: [{ type: 'text', text: 'Mathematical equations with LaTeX support' }]
-                  }
-                ]
-              },
-              {
-                type: 'listItem',
-                content: [
-                  {
-                    type: 'paragraph',
-                    content: [{ type: 'text', text: 'Multiple highlight colors' }]
-                  }
-                ]
-              },
-              {
-                type: 'listItem',
-                content: [
-                  {
-                    type: 'paragraph',
-                    content: [{ type: 'text', text: 'Image support' }]
-                  }
-                ]
-              },
-              {
-                type: 'listItem',
-                content: [
-                  {
-                    type: 'paragraph',
-                    content: [{ type: 'text', text: 'Citation management' }]
-                  }
-                ]
+                type: 'paragraph',
+                content: []
               }
             ]
-          },
-          {
-            type: 'paragraph',
-            content: [
-              { type: 'text', text: 'Try creating a new document to get started!' }
-            ]
-          }
-        ]
-      }),
-      createdAt: new Date(),
-      updatedAt: new Date()
+          })
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating document:', error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Failed to create document:', error);
+      return null;
     }
-  ];
-
-  getAllDocuments(): Document[] {
-    return this.documents.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
   }
 
-  getDocument(id: string): Document | undefined {
-    return this.documents.find(doc => doc.id === id);
+  async updateDocument(id: string, updates: DocumentUpdate): Promise<Document | null> {
+    try {
+      const { data, error } = await (supabase as any)
+        .from('documents')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error updating document:', error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Failed to update document:', error);
+      return null;
+    }
   }
 
-  createDocument(title: string = 'Untitled'): Document {
-    const document: Document = {
-      id: Math.random().toString(36).substr(2, 9),
-      title,
-      content: JSON.stringify({
-        type: 'doc',
-        content: [
-          {
-            type: 'paragraph',
-            content: []
-          }
-        ]
-      }),
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    this.documents.push(document);
-    return document;
-  }
+  async deleteDocument(id: string): Promise<boolean> {
+    try {
+      const { error } = await (supabase as any)
+        .from('documents')
+        .delete()
+        .eq('id', id);
 
-  updateDocument(id: string, updates: Partial<Omit<Document, 'id' | 'createdAt'>>): Document | undefined {
-    const document = this.getDocument(id);
-    if (!document) return undefined;
+      if (error) {
+        console.error('Error deleting document:', error);
+        throw error;
+      }
 
-    Object.assign(document, updates, { updatedAt: new Date() });
-    return document;
-  }
-
-  deleteDocument(id: string): boolean {
-    const index = this.documents.findIndex(doc => doc.id === id);
-    if (index === -1) return false;
-    this.documents.splice(index, 1);
-    return true;
+      return true;
+    } catch (error) {
+      console.error('Failed to delete document:', error);
+      return false;
+    }
   }
 }
 

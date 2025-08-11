@@ -1,38 +1,46 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Plus, FileText, Search, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { documentStore, type Document } from '@/lib/document-store';
+import { useDocuments } from '@/hooks/use-documents';
 
 const Documents = () => {
-  const [documents, setDocuments] = useState<Document[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+  const { documents, loading, createDocument } = useDocuments();
 
-  useEffect(() => {
-    setDocuments(documentStore.getAllDocuments());
-  }, []);
-
-  const handleCreateDocument = () => {
-    const newDoc = documentStore.createDocument();
-    setDocuments(documentStore.getAllDocuments());
-    // Navigate to the new document
-    window.location.href = `/editor/${newDoc.id}`;
+  const handleCreateDocument = async () => {
+    const newDoc = await createDocument();
+    if (newDoc) {
+      navigate(`/editor/${newDoc.id}`);
+    }
   };
 
   const filteredDocuments = documents.filter(doc =>
     doc.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const formatDate = (date: Date) => {
+  const formatDate = (dateString: string) => {
     return new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
-    }).format(date);
+    }).format(new Date(dateString));
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-2">Loading documents...</h2>
+          <p className="text-muted-foreground">Please wait while we load your documents.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -103,7 +111,7 @@ const Documents = () => {
                     </CardTitle>
                     <CardDescription className="flex items-center text-xs">
                       <Calendar className="w-3 h-3 mr-1" />
-                      {formatDate(document.updatedAt)}
+                      {formatDate(document.updated_at)}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="pt-0">
