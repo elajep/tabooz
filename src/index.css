@@ -183,7 +183,7 @@ All colors MUST be HSL.
 
 .ProseMirror h2 {
   font-size: 2rem !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
   line-height: 1.3 !important;
   margin: 1.25rem 0 0.75rem 0 !important;
 }
