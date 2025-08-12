@@ -6,7 +6,7 @@ import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import Mathematics from '@tiptap/extension-mathematics';
 import TextAlign from '@tiptap/extension-text-align';
 import { createLowlight, all } from 'lowlight';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Bold, 
   Italic, 
@@ -103,7 +103,14 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
         },
       }),
     ],
-    content: content ? JSON.parse(content) : undefined,
+    content: content ? (() => {
+      try {
+        return JSON.parse(content);
+      } catch (e) {
+        console.warn('Failed to parse content JSON:', e);
+        return undefined;
+      }
+    })() : undefined,
     onUpdate: ({ editor }) => {
       onChange(JSON.stringify(editor.getJSON()));
     },
@@ -114,6 +121,20 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       },
     },
   });
+
+  // Update editor content when content prop changes
+  useEffect(() => {
+    if (editor && content) {
+      try {
+        const parsedContent = JSON.parse(content);
+        if (JSON.stringify(editor.getJSON()) !== content) {
+          editor.commands.setContent(parsedContent);
+        }
+      } catch (e) {
+        console.warn('Failed to update editor content:', e);
+      }
+    }
+  }, [content, editor]);
 
   if (!editor) {
     return null;
