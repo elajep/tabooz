@@ -62,7 +62,8 @@ h3, .ProseMirror h3 {
 ========================= */
 p, .ProseMirror p {
   font-size: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
+  margin-top: 0.75rem;
 }
 
 /* =========================
@@ -104,22 +105,6 @@ p code {
    TEXT ALIGN CLASSES
 ========================= */
 
-.text-justify,
-.ProseMirror .text-justify {
-  text-align: justify !important;
-  white-space: normal !important;
-  display: block !important;
-}
-
-.text-justify p,
-.text-justify div,
-.ProseMirror .text-justify p,
-.ProseMirror .text-justify div {
-  text-align: justify !important;
-  white-space: normal !important;
-  display: block !important;
-}
-
 .text-left {
   text-align: left !important;
 }
@@ -130,6 +115,30 @@ p code {
 
 .text-right {
   text-align: right !important;
+}
+
+/* =========================
+   TEXT ALIGN - JUSTIFY
+========================= */
+
+/* Se la classe è sul contenitore */
+.text-justify,
+.ProseMirror.text-justify {
+  text-align: justify !important;
+  white-space: normal !important;
+}
+
+
+/* Justify forzato compatibile Safari */
+.text-justify,
+.text-justify * ,
+.ProseMirror.text-justify,
+.ProseMirror.text-justify *,
+.ProseMirror .text-justify,
+.ProseMirror .text-justify * {
+  text-align: justify !important;
+  white-space: normal !important;
+  display: block !important; /* Safari fix per giustificazione */
 }
 
 
