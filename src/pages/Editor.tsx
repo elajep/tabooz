@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,6 +26,11 @@ const Editor = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [isEditingTitle, setIsEditingTitle] = useState(false);
+  
+  // Refs per gestire il debouncing
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isTypingRef = useRef(false);
+  const lastContentRef = useRef('');
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -33,10 +38,12 @@ const Editor = () => {
     }
   }, [user, authLoading, navigate]);
 
+  // Aggiorna il contenuto locale solo se l'utente non sta scrivendo
   useEffect(() => {
-    if (document) {
+    if (document && !isTypingRef.current) {
       setTitle(document.title);
       setContent(document.content);
+      lastContentRef.current = document.content;
     }
   }, [document]);
 
@@ -50,14 +57,41 @@ const Editor = () => {
     }
   }, [loading, document, id]);
 
+  // Cleanup del timeout quando il componente viene smontato
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Funzione di salvataggio con debounce
+  const debouncedSave = useCallback(async (newContent: string) => {
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = setTimeout(async () => {
+      try {
+        await updateDocument({ content: newContent });
+        lastContentRef.current = newContent;
+        isTypingRef.current = false;
+      } catch (error) {
+        console.error('Error saving content:', error);
+      }
+    }, 1000); // Salva dopo 1 secondo di inattività
+  }, [updateDocument]);
+
   const handleTitleChange = async (newTitle: string) => {
     setTitle(newTitle);
     await updateDocument({ title: newTitle });
   };
 
-  const handleContentChange = async (newContent: string) => {
+  const handleContentChange = (newContent: string) => {
+    isTypingRef.current = true;
     setContent(newContent);
-    await updateDocument({ content: newContent });
+    debouncedSave(newContent);
   };
 
   const handleTitleSubmit = () => {
