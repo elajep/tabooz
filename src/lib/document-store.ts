@@ -4,6 +4,7 @@ export interface Document {
   id: string;
   title: string;
   content: string;
+  user_id: string;
   created_at: string;
   updated_at: string;
 }
@@ -60,10 +61,17 @@ class DocumentStore {
 
   async createDocument(title: string = 'Untitled'): Promise<Document | null> {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.error('User not authenticated');
+        return null;
+      }
+
       const { data, error } = await (supabase as any)
         .from('documents')
         .insert({
           title,
+          user_id: user.id,
           content: JSON.stringify({
             type: 'doc',
             content: [

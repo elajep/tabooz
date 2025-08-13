@@ -15,15 +15,23 @@ import {
 import { toast } from '@/hooks/use-toast';
 import { useDocument } from '@/hooks/use-document';
 import RichTextEditor from '@/components/RichTextEditor';
+import { useAuth } from '@/components/AuthProvider';
 
 const Editor = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { document, loading, saving, updateDocument, deleteDocument } = useDocument(id);
+  const { user, loading: authLoading } = useAuth();
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [isEditingTitle, setIsEditingTitle] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/auth');
+    }
+  }, [user, authLoading, navigate]);
 
   useEffect(() => {
     if (document) {
