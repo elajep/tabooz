@@ -148,7 +148,7 @@ const Editor = () => {
   return (
     <div className="min-h-screen bg-editor-bg">
       {/* Header */}
-      <div className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-20">
+      <div className="border-b bg-background/90 backdrop-blur-sm fixed top-0 left-0 right-0 z-20">
         <div className="flex items-center justify-between px-6 py-3">
           <div className="flex items-center gap-4 flex-1">
             <Link to="/documents">
@@ -221,7 +221,7 @@ const Editor = () => {
       </div>
 
       {/* Editor */}
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto pt-[100px]">
         <RichTextEditor
           content={content}
           onChange={handleContentChange}

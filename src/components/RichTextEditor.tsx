@@ -51,14 +51,14 @@ interface RichTextEditorProps {
 }
 
 const highlightColors = [
-  { name: 'Yellow', value: '#ffeb3b', class: 'bg-notion-yellow' },
-  { name: 'Red', value: '#f44336', class: 'bg-notion-red' },
-  { name: 'Orange', value: '#ff9800', class: 'bg-notion-orange' },
-  { name: 'Green', value: '#4caf50', class: 'bg-notion-green' },
-  { name: 'Blue', value: '#2196f3', class: 'bg-notion-blue' },
-  { name: 'Purple', value: '#9c27b0', class: 'bg-notion-purple' },
-  { name: 'Pink', value: '#e91e63', class: 'bg-notion-pink' },
-  { name: 'Gray', value: '#757575', class: 'bg-notion-gray' },
+  { name: 'Red', value: '#f5545fff', class: 'bg-notion-red' },
+  { name: 'Orange', value: '#FF981F', class: 'bg-notion-orange' },
+  { name: 'Yellow', value: '#FFEA29', class: 'bg-notion-yellow' },
+  { name: 'Green', value: '#83EB4A', class: 'bg-notion-green' },
+  { name: 'Blue', value: '#60DDFD', class: 'bg-notion-blue' },
+  { name: 'Purple', value: '#C263FA', class: 'bg-notion-purple' },
+  { name: 'Pink', value: '#FAA0E2', class: 'bg-notion-pink' },
+  { name: 'Gray', value: '#B2B2B2', class: 'bg-notion-gray' },
 ];
 
 const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }: RichTextEditorProps) => {
@@ -84,6 +84,9 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       }),
       Highlight.configure({
         multicolor: true,
+        HTMLAttributes: {
+          style: 'padding: 0 2px; border-radius: 3px;'
+        },
       }),
       Image.configure({
         HTMLAttributes: {
@@ -195,8 +198,8 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
   return (
     <div className={`bg-editor-bg ${className}`}>
       {/* Toolbar */}
-      <div className="border-b bg-background/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="flex items-center gap-1 p-2 flex-wrap">
+      <div className="border-b bg-background/90 backdrop-blur-sm fixed top-14 left-0 right-0 z-10">
+        <div className="flex items-center gap-1 p-2 flex-wrap max-w-screen-lg mx-auto">
           {/* Text Formatting */}
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleBold().run()}
@@ -329,7 +332,8 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                   className="flex items-center gap-2"
                 >
                   <div 
-                    className={`w-4 h-4 rounded ${color.class}`}
+                    className={`w-4 h-4 rounded`}
+                    style={{backgroundColor: color.value}}
                   />
                   {color.name}
                 </DropdownMenuItem>
