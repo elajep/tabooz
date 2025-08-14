@@ -186,9 +186,6 @@ All colors MUST be HSL.
 .ProseMirror .katex-display {
   display: block !important;
   text-align: center !important;
-  margin: 1.5rem auto !important;
-  font-size: 1.4em !important;
-  padding: 1rem 0 !important;
 }
 
 .ProseMirror .katex .katex-html {
@@ -199,7 +196,6 @@ All colors MUST be HSL.
 /* Remove inline styling for math */
 .ProseMirror .katex:not(.katex-display) {
   display: block !important;
-  text-align: center !important;
   margin: 1.5rem auto !important;
 }
 

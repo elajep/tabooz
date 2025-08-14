@@ -51,14 +51,14 @@ interface RichTextEditorProps {
 }
 
 const highlightColors = [
-  { name: 'Red', value: '#f5545fff', class: 'bg-notion-red' },
-  { name: 'Orange', value: '#FF981F', class: 'bg-notion-orange' },
-  { name: 'Yellow', value: '#FFEA29', class: 'bg-notion-yellow' },
-  { name: 'Green', value: '#83EB4A', class: 'bg-notion-green' },
-  { name: 'Blue', value: '#60DDFD', class: 'bg-notion-blue' },
-  { name: 'Purple', value: '#C263FA', class: 'bg-notion-purple' },
-  { name: 'Pink', value: '#FAA0E2', class: 'bg-notion-pink' },
-  { name: 'Gray', value: '#B2B2B2', class: 'bg-notion-gray' },
+  { name: 'Red', value: '#f5545fb6', class: 'bg-notion-red' },
+  { name: 'Orange', value: '#ff971fa7', class: 'bg-notion-orange' },
+  { name: 'Yellow', value: '#ffea29a0', class: 'bg-notion-yellow' },
+  { name: 'Green', value: '#82eb4aa1', class: 'bg-notion-green' },
+  { name: 'Blue', value: '#60defda2', class: 'bg-notion-blue' },
+  { name: 'Purple', value: '#c363faa3', class: 'bg-notion-purple' },
+  { name: 'Pink', value: '#faa0e2a0', class: 'bg-notion-pink' },
+  { name: 'Gray', value: '#b2b2b29e', class: 'bg-notion-gray' },
 ];
 
 const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }: RichTextEditorProps) => {
