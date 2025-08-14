@@ -97,12 +97,17 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
         lowlight: createLowlight(all),
         defaultLanguage: 'javascript',
         HTMLAttributes: {
-          class: 'bg-muted p-4 rounded-lg font-mono text-sm border-l-4 border-primary',
+          class: 'bg-muted p-4 rounded-lg font-mono text-sm',
         },
       }),
       Mathematics.configure({
         katexOptions: {
           throwOnError: false,
+          displayMode: true, // Force all equations to display mode
+          macros: {
+            "\\RR": "\\mathbb{R}",
+            "\\displaystyle": "\\displaystyle"
+          }
         },
       }),
     ],
@@ -121,6 +126,25 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
     editorProps: {
       attributes: {
         class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl max-w-none focus:outline-none p-6',
+      },
+      handleTextInput: (view, from, to, text) => {
+        // Handle inline math input /(.../) 
+        if (text === ')') {
+          const { state } = view;
+          const textBefore = state.doc.textBetween(Math.max(0, from - 20), from, ' ');
+          const match = textBefore.match(/\/\([^)]*$/);
+          if (match) {
+            const start = from - match[0].length;
+            const mathContent = match[0].slice(2); // Remove /(
+            view.dispatch(
+              state.tr
+                .delete(start, to)
+                .insertText(`\\(${mathContent}\\)`)
+            );
+            return true;
+          }
+        }
+        return false;
       },
     },
   });
@@ -152,7 +176,8 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
   const addEquation = () => {
     if (equationInput) {
-      editor.chain().focus().insertContent(`$$${equationInput}$$`).run();
+      // Insert equation in display mode
+      editor.chain().focus().insertContent(`$$\\displaystyle ${equationInput}$$`).run();
       setEquationInput('');
     }
   };
@@ -222,12 +247,38 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
             <Strikethrough className="h-4 w-4" />
           </ToolbarButton>
           
-          <ToolbarButton
-            onClick={() => editor.chain().focus().toggleHighlight().run()}
-            isActive={editor.isActive('highlight')}
-          >
-            <Highlighter className="h-4 w-4" />
-          </ToolbarButton>
+          {/* Highlight with colors */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Toggle
+                pressed={editor.isActive('highlight')}
+                size="sm"
+                className="h-8 w-8"
+              >
+                <Highlighter className="h-4 w-4" />
+              </Toggle>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {highlightColors.map((color) => (
+                <DropdownMenuItem
+                  key={color.value}
+                  onClick={() => setHighlight(color.value)}
+                  className="flex items-center gap-2"
+                >
+                  <div 
+                    className={`w-4 h-4 rounded`}
+                    style={{backgroundColor: color.value}}
+                  />
+                  {color.name}
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuItem
+                onClick={() => editor.chain().focus().unsetHighlight().run()}
+              >
+                Remove highlight
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleCode().run()}
@@ -314,37 +365,6 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
           >
             <AlignJustify className="h-4 w-4" />
           </ToolbarButton>
-
-          <Separator orientation="vertical" className="h-6" />
-
-          {/* Highlight Colors */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-8">
-                <Palette className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {highlightColors.map((color) => (
-                <DropdownMenuItem
-                  key={color.value}
-                  onClick={() => setHighlight(color.value)}
-                  className="flex items-center gap-2"
-                >
-                  <div 
-                    className={`w-4 h-4 rounded`}
-                    style={{backgroundColor: color.value}}
-                  />
-                  {color.name}
-                </DropdownMenuItem>
-              ))}
-              <DropdownMenuItem
-                onClick={() => editor.chain().focus().unsetHighlight().run()}
-              >
-                Remove highlight
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
 
           <Separator orientation="vertical" className="h-6" />
 

@@ -172,6 +172,37 @@ All colors MUST be HSL.
 .ProseMirror pre code .hljs-selector-class { color: #6f42c1; }
 .ProseMirror pre code .hljs-selector-id { color: #005cc5; }
 
+/* Safari text-align justify optimization */
+.ProseMirror [style*="text-align: justify"] {
+  text-align: justify !important;
+  text-align-last: left !important;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
+}
+
+/* Math equations styling - Force display mode */
+.ProseMirror .katex,
+.ProseMirror .katex-display {
+  display: block !important;
+  text-align: center !important;
+  margin: 1.5rem auto !important;
+  font-size: 1.4em !important;
+  padding: 1rem 0 !important;
+}
+
+.ProseMirror .katex .katex-html {
+  display: block !important;
+  text-align: center !important;
+}
+
+/* Remove inline styling for math */
+.ProseMirror .katex:not(.katex-display) {
+  display: block !important;
+  text-align: center !important;
+  margin: 1.5rem auto !important;
+}
+
 /* Heading styles in editor */
 .ProseMirror h1 {
   font-size: 2.5rem !important;
