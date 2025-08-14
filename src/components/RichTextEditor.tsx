@@ -97,7 +97,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
         lowlight: createLowlight(all),
         defaultLanguage: 'javascript',
         HTMLAttributes: {
-          class: 'bg-muted p-4 rounded-lg font-mono text-sm border-l-4 border-primary',
+          class: 'bg-muted p-4 rounded-lg font-mono text-sm',
         },
       }),
       Mathematics.configure({
@@ -121,6 +121,25 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
     editorProps: {
       attributes: {
         class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl max-w-none focus:outline-none p-6',
+      },
+      handleTextInput: (view, from, to, text) => {
+        // Handle inline math input /(.../) 
+        if (text === ')') {
+          const { state } = view;
+          const textBefore = state.doc.textBetween(Math.max(0, from - 20), from, ' ');
+          const match = textBefore.match(/\/\([^)]*$/);
+          if (match) {
+            const start = from - match[0].length;
+            const mathContent = match[0].slice(2); // Remove /(
+            view.dispatch(
+              state.tr
+                .delete(start, to)
+                .insertText(`\\(${mathContent}\\)`)
+            );
+            return true;
+          }
+        }
+        return false;
       },
     },
   });
@@ -152,6 +171,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
   const addEquation = () => {
     if (equationInput) {
+      // Use display mode for $$ equations (large, centered)
       editor.chain().focus().insertContent(`$$${equationInput}$$`).run();
       setEquationInput('');
     }
