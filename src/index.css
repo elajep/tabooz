@@ -151,7 +151,6 @@ All colors MUST be HSL.
   background-color: hsla(162, 100%, 24%, 0.123);
   border-left: 4px solid hsl(162, 100%, 24%);
   padding: 1rem;
-  margin: 1rem 0;
   border-radius: 0.5rem;
 }
 
