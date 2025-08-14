@@ -171,8 +171,8 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
   const addEquation = () => {
     if (equationInput) {
-      // Use display mode for $$ equations (large, centered)
-      editor.chain().focus().insertContent(`$$${equationInput}$$`).run();
+      // Force display mode for $$ equations (large, centered, not compact)
+      editor.chain().focus().insertContent(`<div class="math-display">$$${equationInput}$$</div>`).run();
       setEquationInput('');
     }
   };
