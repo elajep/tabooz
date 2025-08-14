@@ -222,12 +222,38 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
             <Strikethrough className="h-4 w-4" />
           </ToolbarButton>
           
-          <ToolbarButton
-            onClick={() => editor.chain().focus().toggleHighlight().run()}
-            isActive={editor.isActive('highlight')}
-          >
-            <Highlighter className="h-4 w-4" />
-          </ToolbarButton>
+          {/* Highlight with colors */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Toggle
+                pressed={editor.isActive('highlight')}
+                size="sm"
+                className="h-8 w-8"
+              >
+                <Highlighter className="h-4 w-4" />
+              </Toggle>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {highlightColors.map((color) => (
+                <DropdownMenuItem
+                  key={color.value}
+                  onClick={() => setHighlight(color.value)}
+                  className="flex items-center gap-2"
+                >
+                  <div 
+                    className={`w-4 h-4 rounded`}
+                    style={{backgroundColor: color.value}}
+                  />
+                  {color.name}
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuItem
+                onClick={() => editor.chain().focus().unsetHighlight().run()}
+              >
+                Remove highlight
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleCode().run()}
@@ -314,37 +340,6 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
           >
             <AlignJustify className="h-4 w-4" />
           </ToolbarButton>
-
-          <Separator orientation="vertical" className="h-6" />
-
-          {/* Highlight Colors */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-8">
-                <Palette className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {highlightColors.map((color) => (
-                <DropdownMenuItem
-                  key={color.value}
-                  onClick={() => setHighlight(color.value)}
-                  className="flex items-center gap-2"
-                >
-                  <div 
-                    className={`w-4 h-4 rounded`}
-                    style={{backgroundColor: color.value}}
-                  />
-                  {color.name}
-                </DropdownMenuItem>
-              ))}
-              <DropdownMenuItem
-                onClick={() => editor.chain().focus().unsetHighlight().run()}
-              >
-                Remove highlight
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
 
           <Separator orientation="vertical" className="h-6" />
 
