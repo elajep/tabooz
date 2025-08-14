@@ -103,6 +103,11 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       Mathematics.configure({
         katexOptions: {
           throwOnError: false,
+          displayMode: true, // Force all equations to display mode
+          macros: {
+            "\\RR": "\\mathbb{R}",
+            "\\displaystyle": "\\displaystyle"
+          }
         },
       }),
     ],
@@ -171,8 +176,8 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
   const addEquation = () => {
     if (equationInput) {
-      // Force display mode for $$ equations (large, centered, not compact)
-      editor.chain().focus().insertContent(`<div class="math-display">$$${equationInput}$$</div>`).run();
+      // Insert equation in display mode
+      editor.chain().focus().insertContent(`$$\\displaystyle ${equationInput}$$`).run();
       setEquationInput('');
     }
   };

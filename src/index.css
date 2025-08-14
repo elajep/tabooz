@@ -182,28 +182,26 @@ All colors MUST be HSL.
   hyphens: auto;
 }
 
-/* Math equations styling */
-.ProseMirror .katex-display,
-.ProseMirror .math-display .katex {
-  margin: 1.5rem 0 !important;
-  text-align: center !important;
-  font-size: 1.3em !important;
+/* Math equations styling - Force display mode */
+.ProseMirror .katex,
+.ProseMirror .katex-display {
   display: block !important;
-}
-
-.ProseMirror .math-display {
   text-align: center !important;
-  margin: 1.5rem 0 !important;
+  margin: 1.5rem auto !important;
+  font-size: 1.4em !important;
+  padding: 1rem 0 !important;
 }
 
-.ProseMirror .katex {
-  font-size: 1.1em !important;
+.ProseMirror .katex .katex-html {
+  display: block !important;
+  text-align: center !important;
 }
 
-/* Inline math equations - no background */
+/* Remove inline styling for math */
 .ProseMirror .katex:not(.katex-display) {
-  display: inline-block !important;
-  margin: 0 0.1em !important;
+  display: block !important;
+  text-align: center !important;
+  margin: 1.5rem auto !important;
 }
 
 /* Heading styles in editor */
