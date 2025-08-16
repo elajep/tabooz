@@ -1,249 +1,93 @@
-@import 'katex/dist/katex.min.css';
-
-/* Math equation styling */
-.math-equation {
-  @apply inline-block px-2 py-1 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded;
-}
+@import "highlight.js/styles/github.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 9%;
-
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 9%;
-
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
-
-    --accent: 220 14% 96%;
-    --accent-foreground: 0 0% 9%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 0% 9%;
-
-    --radius: 0.375rem;
-    
-    /* Notion-inspired colors */
-    --notion-red: 0 70% 67%;
-    --notion-orange: 25 95% 60%;
-    --notion-yellow: 45 100% 70%;
-    --notion-green: 120 44% 55%;
-    --notion-blue: 220 100% 69%;
-    --notion-purple: 260 60% 65%;
-    --notion-pink: 320 65% 75%;
-    --notion-gray: 0 0% 70%;
-    
-    /* Editor specific */
-    --editor-bg: 0 0% 100%;
-    --editor-sidebar: 0 0% 98%;
-    --hover-bg: 0 0% 96%;
-    --selection-bg: 220 100% 95%;
-    
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(220 100% 69%), hsl(260 60% 65%));
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 98%));
-    
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -4px hsl(0 0% 0% / 0.1);
-    
-    /* Transitions */
-    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    
-    /* Dark mode editor colors */
-    --editor-bg: 0 0% 3.9%;
-    --editor-sidebar: 0 0% 6%;
-    --hover-bg: 0 0% 14.9%;
-    --selection-bg: 220 100% 15%;
-    
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 3.9%), hsl(0 0% 6%));
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
+/* Global CSS Overrides */
+.btn-custom-primary {
+  background-color: #ff0000 !important; /* Example: Red background */
+  color: white !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem 1.5rem !important;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-  }
+/* Aggressive CSS Reset for common block elements */
+h1, h2, h3, h4, h5, h6, p, ul, ol, li, pre, blockquote, figure, table, dl, dd {
+  margin: 0;
+  padding: 0;
 }
 
-/* Custom blockquote styling */
-.ProseMirror blockquote {
-  background-color: hsla(162, 100%, 24%, 0.123);
-  border-left: 4px solid hsl(162, 100%, 24%);
-  padding: 1rem;
+/* Tiptap/Prose related styles */
+.ProseMirror {
+  min-height: 200px;
+  outline: none;
+  color: #333; /* Set default text color to dark gray */
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #016fdd;
+  pointer-events: none;
+  height: 0;
+}
+
+
+
+/* Inline Code */
+code {
+  background-color: transparent;
+  padding: 0.2em 0.4em;
+  border-radius: 0.2em;
+  font-size: 1rem !important;
+  color: black; /* Ensure inline code inherits color */
+}
+
+/* Attempt to remove quotes/extra content from inline code */
+code::before,
+code::after {
+  content: none !important;
+}
+
+/* Math Blocks */
+.math-block-wrapper {
+  padding: 0 1rem; /* Removed top/bottom padding */
+  border: 1px solid #eee;
   border-radius: 0.5rem;
+  /* margin: 1rem 0; */ /* Removed margins */
+  /* background-color: #f9f9f9; */ /* Removed background */
+  overflow-x: auto;
+  font-size: 1.1rem; /* Specific font size for equations */
 }
 
-/* Syntax highlighting for code blocks */
-.ProseMirror pre code .hljs-keyword { color: #d73a49; }
-.ProseMirror pre code .hljs-string { color: #032f62; }
-.ProseMirror pre code .hljs-comment { color: #6a737d; font-style: italic; }
-.ProseMirror pre code .hljs-number { color: #005cc5; }
-.ProseMirror pre code .hljs-function { color: #6f42c1; }
-.ProseMirror pre code .hljs-variable { color: #e36209; }
-.ProseMirror pre code .hljs-title { color: #6f42c1; font-weight: bold; }
-.ProseMirror pre code .hljs-params { color: #24292e; }
-.ProseMirror pre code .hljs-built_in { color: #005cc5; }
-.ProseMirror pre code .hljs-tag { color: #22863a; }
-.ProseMirror pre code .hljs-attr { color: #6f42c1; }
-.ProseMirror pre code .hljs-attribute { color: #6f42c1; }
-.ProseMirror pre code .hljs-doctag { color: #d73a4a61; }
-.ProseMirror pre code .hljs-selector-tag { color: #22863a; }
-.ProseMirror pre code .hljs-selector-class { color: #6f42c1; }
-.ProseMirror pre code .hljs-selector-id { color: #005cc5; }
-
-/* Safari text-align justify optimization */
-.ProseMirror [style*="text-align: justify"] {
-  text-align: justify !important;
-  text-align-last: left !important;
-  -webkit-hyphens: auto;
-  -moz-hyphens: auto;
-  hyphens: auto;
+.math-block-wrapper:hover {
+  background-color: #fafafa; /* Even lighter gray on hover */
 }
 
-
-
-/* Heading styles in editor */
-.ProseMirror h1 {
-  font-size: 2.5rem !important;
-  font-weight: 700 !important;
-  line-height: 1.2 !important;
-  margin: 1.5rem 0 1rem 0 !important;
+/* Lists */
+ul,
+ol {
+  padding-left: 1.5rem;
 }
 
-.ProseMirror h2 {
-  font-size: 2rem !important;
-  font-weight: 700 !important;
-  line-height: 1.3 !important;
-  margin: 1.25rem 0 0.75rem 0 !important;
-  margin-bottom: 1rem !important;
+li {
+  margin-bottom: 0.5rem;
 }
 
-.ProseMirror h3 {
-  font-size: 1.5rem !important;
-  font-weight: 500 !important;
-  line-height: 1.4 !important;
-  margin: 1rem 0 0.5rem 0 !important;
+/* Define CSS variable for light code block background */
+:root {
+  --code-light-bg: #f6f8fa; /* Example light background color */
 }
 
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+pre {
+  background: var(--code-light-bg) !important; /* Forced light background */
+  padding: 0 1rem; /* Removed top/bottom padding */
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  overflow-x: auto;
+  margin: 0; /* Removed margins */
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+pre code {
+  color: #000000 !important;
 }

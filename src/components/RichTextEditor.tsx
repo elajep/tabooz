@@ -1,6 +1,8 @@
 import 'katex/dist/katex.min.css';
 import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
+import { StarterKit } from "@tiptap/starter-kit";
+import BulletList from "@tiptap/extension-bullet-list";
+import OrderedList from "@tiptap/extension-ordered-list";
 import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
@@ -77,6 +79,8 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
           },
         },
       }),
+      BulletList, // Added
+      OrderedList, // Added
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
@@ -101,7 +105,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
         lowlight: createLowlight(all),
         defaultLanguage: 'javascript',
         HTMLAttributes: {
-          class: 'bg-muted p-4 rounded-lg font-mono text-sm',
+                    class: 'bg-muted p-4 rounded-lg font-mono text-xs text-foreground',
         },
       }),
     ],
@@ -199,7 +203,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
     <div className={`bg-editor-bg ${className}`}>
       {/* Toolbar */}
       <div className="border-b bg-background shadow-sm backdrop-blur-sm fixed top-14 left-0 right-0 z-10">
-        <div className="flex items-center gap-1 p-2 flex-wrap max-w-screen-lg mx-auto">
+        <div className="flex items-center gap-1 p-2 flex-wrap max-w-screen-lg mx-auto justify-center">
           {/* Text Formatting */}
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleBold().run()}

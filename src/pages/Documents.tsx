@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDocuments } from '@/hooks/use-documents';
+import { getPlainTextFromTiptapJson } from '@/lib/utils';
 
 const Documents = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -24,12 +25,16 @@ const Documents = () => {
   );
 
   const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return ''; // Return empty string for invalid date
+    }
     return new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
-    }).format(new Date(dateString));
+    }).format(date);
   };
 
   if (loading) {
@@ -55,7 +60,7 @@ const Documents = () => {
                 {documents.length} document{documents.length !== 1 ? 's' : ''}
               </p>
             </div>
-            <Button onClick={handleCreateDocument} size="lg" className="shadow-md">
+            <Button onClick={handleCreateDocument} size="lg" className="shadow-md btn-custom-primary">
               <Plus className="w-4 h-4 mr-2" />
               New Document
             </Button>
@@ -112,12 +117,12 @@ const Documents = () => {
                     </CardTitle>
                     <CardDescription className="flex items-center text-xs">
                       <Calendar className="w-3 h-3 mr-1" />
+                      {formatDate(document.updated_at)}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <div className="h-16 text-sm text-muted-foreground line-clamp-3">
-                      {/* Simple content preview - in a real app you'd extract text from rich content */}
-                      Click to open and edit this document...
+                      {getPlainTextFromTiptapJson(document.content) || 'Click to open and edit this document...'}
                     </div>
                   </CardContent>
                 </Card>

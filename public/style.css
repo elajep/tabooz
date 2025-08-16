@@ -93,12 +93,10 @@ button {
 ========================= */
 p code {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 5rem !important;
   font-weight: 400;
-  color: var(--primary_color);
   padding: 0.3rem;
   border-radius: 8px;
-  background-color: var(--primary_color_tran);
 }
 
 /* =========================
@@ -144,18 +142,9 @@ p code {
 
 
 
-/* =========================
-   DARK MODE
-========================= */
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: var(--back_color);
-    color: var(--text_color);
-  }
-}
+
 
 .link {
   color: var(--primary_color);
 }
 
-z

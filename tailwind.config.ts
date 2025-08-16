@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 export default {
-	darkMode: ["class"],
+	
 	content: [
 		"./pages/**/*.{ts,tsx}",
 		"./components/**/*.{ts,tsx}",
@@ -77,7 +77,8 @@ export default {
 					sidebar: 'hsl(var(--editor-sidebar))'
 				},
 				hover: 'hsl(var(--hover-bg))',
-				selection: 'hsl(var(--selection-bg))'
+				selection: 'hsl(var(--selection-bg))',
+				codeBlock: 'hsl(var(--code-light-bg))' // Added for light code block
 			},
 			backgroundImage: {
 				'gradient-primary': 'var(--gradient-primary)',
@@ -120,5 +121,5 @@ export default {
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 } satisfies Config;

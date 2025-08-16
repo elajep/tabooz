@@ -6,14 +6,13 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Documents from "./pages/Documents";
 import Editor from "./pages/Editor";
 import NotFound from "./pages/NotFound";
-import { ThemeProvider } from "next-themes";
+
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="system" enableSystem>
-      <TooltipProvider>
+    <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
@@ -26,7 +25,6 @@ const App = () => (
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
-    </ThemeProvider>
   </QueryClientProvider>
 );
 

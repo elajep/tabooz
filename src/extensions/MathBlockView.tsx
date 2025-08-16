@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 export const MathBlockView = ({ node, updateAttributes, editor }: any) => {
   const [isEditing, setIsEditing] = useState(node.attrs.latex === '');
-  console.log('MathBlockView rendering. isEditing:', isEditing, 'editor.isEditable:', editor.isEditable, 'latex:', node.attrs.latex);
+  
   const [latexValue, setLatexValue] = useState(node.attrs.latex);
   const mathRef = useRef<HTMLDivElement>(null);
 
@@ -21,7 +21,7 @@ export const MathBlockView = ({ node, updateAttributes, editor }: any) => {
           displayMode: true,
           throwOnError: false,
         });
-        console.log('KaTeX rendered successfully in MathBlockView');
+        
       } catch (error) {
         console.error('KaTeX rendering error in MathBlockView:', error);
         if (mathRef.current) {
@@ -39,7 +39,7 @@ export const MathBlockView = ({ node, updateAttributes, editor }: any) => {
   };
 
   if (isEditing && editor.isEditable) {
-    console.log('MathBlockView rendering editing view');
+    
     return (
       <div className={`math-block-editor my-4 p-2 border border-primary rounded-md ${textAlignClass}`}>
         <textarea
@@ -57,10 +57,10 @@ export const MathBlockView = ({ node, updateAttributes, editor }: any) => {
     );
   }
 
-  console.log('MathBlockView rendering static view');
+  
   return (
     <div
-      className={`math-block my-4 cursor-pointer hover:bg-muted/40 rounded-md px-3 py-2`}
+      className={`math-block my-0 cursor-pointer hover:bg-muted/40 rounded-md px-3 py-2`}
       style={{ textAlign: node.attrs.textAlign || 'left' }}
       onClick={() => {
         if (editor.isEditable) {
@@ -68,7 +68,7 @@ export const MathBlockView = ({ node, updateAttributes, editor }: any) => {
         }
       }}
     >
-      <div ref={mathRef} className={!node.attrs.latex ? 'empty-math' : ''} />
+      <div ref={mathRef} className={`math-block-wrapper ${!node.attrs.latex ? 'empty-math' : ''}`} />
       {!node.attrs.latex && (
         <p className="text-muted-foreground">Click to edit equation</p>
       )}

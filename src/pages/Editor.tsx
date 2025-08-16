@@ -72,7 +72,7 @@ const Editor = () => {
       } catch (error) {
         console.error('Error saving content:', error);
       }
-    }, 1000); // Salva dopo 1 secondo di inattività
+    }, 1500); // Salva dopo 1 secondo di inattività
   }, [updateDocument]);
 
   const handleTitleChange = async (newTitle: string) => {
