@@ -125,6 +125,7 @@ p code {
 .text-justify,
 .ProseMirror.text-justify {
   text-align: justify !important;
+  text-align-last: justify !important;
   white-space: normal !important;
 }
 
@@ -157,3 +158,4 @@ p code {
   color: var(--primary_color);
 }
 
+z
