@@ -93,8 +93,12 @@ button {
 ========================= */
 p code {
   font-family: var(--font-mono);
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--primary_color);
+  padding: 0.3rem;
+  border-radius: 8px;
+  background-color: var(--primary_color_tran);
 }
 
 /* =========================
@@ -124,6 +128,18 @@ p code {
   white-space: normal !important;
 }
 
+
+/* Justify forzato compatibile Safari */
+.text-justify,
+.text-justify * ,
+.ProseMirror.text-justify,
+.ProseMirror.text-justify *,
+.ProseMirror .text-justify,
+.ProseMirror .text-justify * {
+  text-align: justify !important;
+  white-space: normal !important;
+  display: block !important; /* Safari fix per giustificazione */
+}
 
 
 
