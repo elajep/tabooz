@@ -5,30 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDocuments } from '@/hooks/use-documents';
-import { useAuth } from '@/components/AuthProvider';
 
 const Documents = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   const { documents, loading, createDocument } = useDocuments();
-  const { user, loading: authLoading } = useAuth();
 
-  useEffect(() => {
-    if (!authLoading && !user) {
-      navigate('/auth');
-    }
-  }, [user, authLoading, navigate]);
-
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
 
   const handleCreateDocument = async () => {
     const newDoc = await createDocument();
@@ -130,7 +112,6 @@ const Documents = () => {
                     </CardTitle>
                     <CardDescription className="flex items-center text-xs">
                       <Calendar className="w-3 h-3 mr-1" />
-                      {formatDate(document.updated_at)}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="pt-0">

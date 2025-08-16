@@ -1,27 +1,13 @@
 import { Node, mergeAttributes } from '@tiptap/core';
-import { ReactNodeViewRenderer } from '@tiptap/react';
 import { MathBlockView } from './MathBlockView';
-import katex from 'katex';
+import { ReactNodeView } from './ReactNodeView';
 
-export interface MathBlockOptions {
-  HTMLAttributes: Record<string, any>,
-}
+// Regex to match inline math format $...$
+const INLINE_MATH_REGEX = /\\$([^\\$]+)\\$/;
 
-declare module '@tiptap/core' {
-  interface Commands<ReturnType> {
-    mathBlock: {
-      setMathBlock: (latex: string) => ReturnType,
-      updateMathBlock: (pos: number, latex: string) => ReturnType,
-      setMathBlockAlignment: (pos: number, align: string) => ReturnType,
-    }
-  }
-}
-
-export const MathBlock = Node.create<MathBlockOptions>({
-  name: 'mathBlock',
-  
+export const MathBlock = Node.create({
+  name: 'math-block',
   group: 'block',
-  
   atom: true,
 
   addAttributes() {
@@ -52,11 +38,11 @@ export const MathBlock = Node.create<MathBlockOptions>({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['div', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, { 'data-type': 'math-block' }), 0]
+    return ['div', mergeAttributes(HTMLAttributes, { 'data-type': 'math-block' }), 0]
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(MathBlockView)
+    return (props) => new ReactNodeView(MathBlockView, props);
   },
 
   addCommands() {
@@ -64,7 +50,6 @@ export const MathBlock = Node.create<MathBlockOptions>({
       setMathBlock: latex => ({ chain }) => {
         return chain()
           .insertContent({ type: this.name, attrs: { latex, textAlign: 'left' } })
-          .insertContent({ type: 'paragraph' })
           .run()
       },
       updateMathBlock: (pos, latex) => ({ tr }) => {

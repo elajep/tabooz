@@ -33,14 +33,18 @@ export function useDocument(id: string | undefined) {
   }, [loadDocument]);
 
   const updateDocument = async (updates: { title?: string; content?: string }) => {
-    if (!document) return null;
+    if (!document) return false; // Return false on failure
 
     try {
       setSaving(true);
-      const updatedDoc = await documentStore.updateDocument(document.id, updates);
-      if (updatedDoc) {
-        setDocument(updatedDoc);
-        return updatedDoc;
+      const success = await documentStore.updateDocument(document.id, updates);
+      if (success) {
+        // Optimistically update the local document state
+        setDocument(prevDoc => {
+          if (!prevDoc) return null;
+          return { ...prevDoc, ...updates };
+        });
+        return true; // Indicate success
       }
     } catch (error) {
       toast({
@@ -48,10 +52,11 @@ export function useDocument(id: string | undefined) {
         description: "Failed to save your changes. Please try again.",
         variant: "destructive"
       });
-    } finally {
+    }
+    finally {
       setSaving(false);
     }
-    return null;
+    return false; // Indicate failure
   };
 
   const deleteDocument = async () => {

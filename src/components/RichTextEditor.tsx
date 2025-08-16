@@ -4,6 +4,7 @@ import StarterKit from '@tiptap/starter-kit';
 import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import TextAlign from '@tiptap/extension-text-align';
 import { createLowlight, all } from 'lowlight';
 import { useState, useEffect } from 'react';
 import { 
@@ -21,8 +22,6 @@ import {
   Undo,
   Redo,
   ImageIcon,
-  Palette,
-  Type,
   Calculator,
   FileCode,
   AlignLeft,
@@ -41,8 +40,8 @@ import {
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import Mathematics from '@tiptap/extension-mathematics';
-import { MathBlock } from '../extensions/MathBlock'
+import { MathBlock } from '../extensions/MathBlock';
+import { InlineMath } from '../extensions/InlineMath';
 
 interface RichTextEditorProps {
   content: string;
@@ -65,7 +64,6 @@ const highlightColors = [
 const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }: RichTextEditorProps) => {
   const [imageUrl, setImageUrl] = useState('');
   const [equationInput, setEquationInput] = useState('');
-  const [editingEquation, setEditingEquation] = useState<{ pos: number, latex: string } | null>(null);
   const [codeLanguage, setCodeLanguage] = useState('javascript');
 
   const editor = useEditor({
@@ -79,12 +77,10 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
           },
         },
       }),
-      Mathematics.configure({
-        katexOptions: {
-          throwOnError: false,
-          displayMode: true,
-        },
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
       }),
+      InlineMath,
       MathBlock.configure({
         HTMLAttributes: {
           class: 'math-block-wrapper',
@@ -125,25 +121,6 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       attributes: {
         class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl max-w-none focus:outline-none p-6',
       },
-      handleTextInput: (view, from, to, text) => {
-        // Handle inline math input /(.../) 
-        if (text === ')') {
-          const { state } = view;
-          const textBefore = state.doc.textBetween(Math.max(0, from - 20), from, ' ');
-          const match = textBefore.match(/\/\([^)]*$/);
-          if (match) {
-            const start = from - match[0].length;
-            const mathContent = match[0].slice(2); // Remove /(
-            view.dispatch(
-              state.tr
-                .delete(start, to)
-                .insertText(`\\(${mathContent}\\)`)
-            );
-            return true;
-          }
-        }
-        return false;
-      },
     },
   });
 
@@ -179,41 +156,6 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       setEquationInput('');
     }
   };
-
-  // Modifica equazione esistente
-  const updateEquation = () => {
-    if (editingEquation && editor) {
-      editor.chain().focus().command(({ tr }) => {
-        return tr.setNodeMarkup(editingEquation.pos, undefined, { latex: equationInput })
-      }).run()
-      setEditingEquation(null)
-      setEquationInput('')
-    }
-  };
-
-  // Cancella equazione selezionata
-  const deleteEquation = () => {
-    if (editingEquation && editor) {
-      editor.chain().focus().command(({ tr }) => {
-        tr.delete(editingEquation.pos, editingEquation.pos + 1);
-        return true;
-      }).run();
-      setEditingEquation(null);
-      setEquationInput('');
-    }
-  };
-
-  // Listener per click sulle equazioni (solo in modalità edit)
-  useEffect(() => {
-    if (!editor || readOnly) return;
-    const handler = (event: CustomEvent) => {
-      const { pos, latex, textAlign } = event.detail;
-      setEditingEquation({ pos, latex, textAlign });
-      setEquationInput(latex);
-    };
-    window.addEventListener('math-block-click', handler as EventListener);
-    return () => window.removeEventListener('math-block-click', handler as EventListener);
-  }, [editor, readOnly]);
 
   const addCodeBlock = () => {
     editor.chain().focus().setCodeBlock({ language: codeLanguage }).run();
@@ -372,53 +314,29 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
           {/* Text Alignment */}
           <ToolbarButton
-            onClick={() => editingEquation 
-              ? setEquationAlignment('left')
-              : editor.chain().focus().setTextAlign('left').run()
-            }
-            isActive={editingEquation 
-              ? editingEquation.textAlign === 'left'
-              : editor.isActive({ textAlign: 'left' })
-            }
+            onClick={() => editor.chain().focus().setTextAlign('left').run()}
+            isActive={editor.isActive({ textAlign: 'left' })}
           >
             <AlignLeft className="h-4 w-4" />
           </ToolbarButton>
           
           <ToolbarButton
-            onClick={() => editingEquation 
-              ? setEquationAlignment('center')
-              : editor.chain().focus().setTextAlign('center').run()
-            }
-            isActive={editingEquation 
-              ? editingEquation.textAlign === 'center'
-              : editor.isActive({ textAlign: 'center' })
-            }
+            onClick={() => editor.chain().focus().setTextAlign('center').run()}
+            isActive={editor.isActive({ textAlign: 'center' })}
           >
             <AlignCenter className="h-4 w-4" />
           </ToolbarButton>
           
           <ToolbarButton
-            onClick={() => editingEquation 
-              ? setEquationAlignment('right')
-              : editor.chain().focus().setTextAlign('right').run()
-            }
-            isActive={editingEquation 
-              ? editingEquation.textAlign === 'right'
-              : editor.isActive({ textAlign: 'right' })
-            }
+            onClick={() => editor.chain().focus().setTextAlign('right').run()}
+            isActive={editor.isActive({ textAlign: 'right' })}
           >
             <AlignRight className="h-4 w-4" />
           </ToolbarButton>
           
           <ToolbarButton
-            onClick={() => editingEquation 
-              ? setEquationAlignment('justify')
-              : editor.chain().focus().setTextAlign('justify').run()
-            }
-            isActive={editingEquation 
-              ? editingEquation.textAlign === 'justify'
-              : editor.isActive({ textAlign: 'justify' })
-            }
+            onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+            isActive={editor.isActive({ textAlign: 'justify' })}
           >
             <AlignJustify className="h-4 w-4" />
           </ToolbarButton>
@@ -462,7 +380,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
           </DropdownMenu>
 
           {/* Equation */}
-          <DropdownMenu open={!!editingEquation || undefined}>
+          <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="h-8">
                 <Calculator className="h-4 w-4" />
@@ -470,9 +388,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-80">
               <div className="p-3">
-                <div className="mb-2 text-sm font-medium">
-                  {editingEquation ? 'Edit Equation' : 'Insert Equation'}
-                </div>
+                <div className="mb-2 text-sm font-medium">Insert Equation</div>
                 <div className="flex gap-2">
                   <Input
                     placeholder="LaTeX equation (e.g., E = mc^2)"
@@ -480,37 +396,16 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                     onChange={(e) => setEquationInput(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
-                        editingEquation ? updateEquation() : addEquation();
+                        addEquation();
                       }
                     }}
                   />
-                  <Button onClick={editingEquation ? updateEquation : addEquation} size="sm">
-                    {editingEquation ? 'Update' : 'Add'}
+                  <Button onClick={addEquation} size="sm">
+                    Add
                   </Button>
-                  {editingEquation && (
-                    <>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={deleteEquation}
-                      >
-                        Delete
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setEditingEquation(null);
-                          setEquationInput('');
-                        }}
-                      >
-                        Cancel
-                      </Button>
-                    </>
-                  )}
                 </div>
                 <div className="mt-2 text-xs text-muted-foreground">
-                  Examples: x^2, \frac&#123;1&#125;&#123;2&#125;, \sum_&#123;n=1&#125;^&#123;\infty&#125;, \alpha + \beta
+                  Examples: x^2, \frac{1}{2}
                 </div>
               </div>
             </DropdownMenuContent>
