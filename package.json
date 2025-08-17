@@ -12,7 +12,12 @@
     "preview": "vite preview",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev --prefix server\" \"electron .\"",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "electron-build": "npm run build && electron-builder"
+=======
+    "build:server": "esbuild server/index.js --bundle --platform=node --format=esm --outfile=dist-server/server.mjs --external:sqlite3",
+    "electron-build": "npm run build && npm install --prefix server && npm run build:server && electron-builder"
+>>>>>>> parent of e84e96a (try)
 =======
     "build:server": "esbuild server/index.js --bundle --platform=node --format=esm --outfile=dist-server/server.mjs --external:sqlite3",
     "electron-build": "npm run build && npm install --prefix server && npm run build:server && electron-builder"

@@ -19,6 +19,11 @@ function createWindow() {
   });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  win.webContents.openDevTools();
+
+>>>>>>> parent of e84e96a (try)
 =======
   win.webContents.openDevTools();
 
@@ -48,7 +53,10 @@ function createWindow() {
 
 app.whenReady().then(() => {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of e84e96a (try)
   if (app.isPackaged) {
     // Start the backend server in production
     const serverPath = path.join(__dirname, 'dist-server', 'server.mjs');
@@ -63,6 +71,9 @@ app.whenReady().then(() => {
     });
   }
 
+<<<<<<< HEAD
+>>>>>>> parent of e84e96a (try)
+=======
 >>>>>>> parent of e84e96a (try)
   createWindow();
 
