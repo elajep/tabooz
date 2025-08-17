@@ -15,11 +15,6 @@ function createWindow() {
     },
   });
 
-<<<<<<< HEAD
-  
-
-=======
->>>>>>> parent of 615a596 (style fix)
   if (app.isPackaged) {
     // Load the production build of your web app
     win.loadFile(path.join(__dirname, '../dist/index.html'));
@@ -46,25 +41,6 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-<<<<<<< HEAD
-  if (app.isPackaged) {
-    // Start the backend server in production
-    const serverPath = path.join(process.resourcesPath, 'app.asar.unpacked', 'dist-server', 'server.mjs');
-    // For debugging: Use spawn with 'inherit' stdio to see server output directly in the terminal
-    serverProcess = require('child_process').spawn('node', [serverPath], {
-      stdio: 'inherit' // Inherit stdout/stderr from the parent process
-    });
-    console.log(`Attempting to start server from: ${serverPath}`);
-    serverProcess.on('error', (err) => {
-      console.error(`Failed to start server process: ${err.message}`);
-    });
-    serverProcess.on('exit', (code, signal) => {
-      console.log(`Server process exited with code ${code} and signal ${signal}`);
-    });
-  }
-
-=======
->>>>>>> parent of 615a596 (style fix)
   createWindow();
 
   app.on('activate', () => {

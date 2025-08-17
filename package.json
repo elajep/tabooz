@@ -11,18 +11,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev --prefix server\" \"electron .\"",
-<<<<<<< HEAD
-    "build:server": "esbuild server/index.js --bundle --platform=node --format=esm --outfile=dist-server/server.mjs --external:sqlite3",
-    "electron-build": "npm run build && npm install --prefix server && electron-rebuild --force --version 37.3.0 --module-path server/node_modules && npm run build:server && electron-builder",
-    "postelectron-build": "mkdir -p release/mac/vite_react_shadcn_ts.app/Contents/Resources/app.asar.unpacked/server/node_modules && cp -R server/node_modules/sqlite3 release/mac/vite_react_shadcn_ts.app/Contents/Resources/app.asar.unpacked/server/node_modules/sqlite3"
-=======
     "electron-build": "npm run build && electron-builder"
->>>>>>> parent of 615a596 (style fix)
   },
   "build": {
-    "asarUnpack": [
-      "dist-server/**/*"
-    ],
     "appId": "com.yourcompany.marimoscribe",
     "files": [
       "dist/**/*",
