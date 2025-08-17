@@ -1,11 +1,8 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const http = require('http');
-const { fork } = require('child_process');
 
 const viteDevServerUrl = 'http://localhost:8080';
-
-let serverProcess;
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -18,11 +15,15 @@ function createWindow() {
     },
   });
 
-  win.webContents.openDevTools();
+<<<<<<< HEAD
+  
 
+=======
+>>>>>>> parent of 615a596 (style fix)
   if (app.isPackaged) {
     // Load the production build of your web app
-    win.loadFile(path.join(__dirname, 'dist/index.html'));
+    win.loadFile(path.join(__dirname, '../dist/index.html'));
+    // win.webContents.openDevTools(); // Removed as per user's request
   } else {
     // Function to check if Vite server is ready
     const checkViteServer = () => {
@@ -30,6 +31,7 @@ function createWindow() {
         if (res.statusCode === 200) {
           console.log('Vite server is ready, loading URL...');
           win.loadURL(viteDevServerUrl);
+          // win.webContents.openDevTools(); // Removed as per user's request
         } else {
           console.log('Vite server not ready, retrying...');
           setTimeout(checkViteServer, 1000);
@@ -44,20 +46,25 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+<<<<<<< HEAD
   if (app.isPackaged) {
     // Start the backend server in production
-    const serverPath = path.join(__dirname, 'dist-server', 'server.mjs');
-    serverProcess = fork(serverPath, [], {
-      stdio: 'pipe' // Pipe stdout/stderr to the main process
+    const serverPath = path.join(process.resourcesPath, 'app.asar.unpacked', 'dist-server', 'server.mjs');
+    // For debugging: Use spawn with 'inherit' stdio to see server output directly in the terminal
+    serverProcess = require('child_process').spawn('node', [serverPath], {
+      stdio: 'inherit' // Inherit stdout/stderr from the parent process
     });
-    serverProcess.stdout.on('data', (data) => {
-      console.log(`Server stdout: ${data}`);
+    console.log(`Attempting to start server from: ${serverPath}`);
+    serverProcess.on('error', (err) => {
+      console.error(`Failed to start server process: ${err.message}`);
     });
-    serverProcess.stderr.on('data', (data) => {
-      console.error(`Server stderr: ${data}`);
+    serverProcess.on('exit', (code, signal) => {
+      console.log(`Server process exited with code ${code} and signal ${signal}`);
     });
   }
 
+=======
+>>>>>>> parent of 615a596 (style fix)
   createWindow();
 
   app.on('activate', () => {
@@ -70,13 +77,5 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
-  }
-});
-
-app.on('will-quit', () => {
-  // Kill the server process when the app is about to quit
-  if (serverProcess) {
-    console.log('Killing server process...');
-    serverProcess.kill();
   }
 });

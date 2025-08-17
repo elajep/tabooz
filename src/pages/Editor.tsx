@@ -140,7 +140,7 @@ const Editor = () => {
   return (
     <div className="min-h-screen bg-editor-bg">
       {/* Header */}
-      <div className="border-b bg-background/100 fixed top-0 left-0 right-0 z-20">
+      <div className="border-b bg-background/90 backdrop-blur-sm fixed top-0 left-0 right-0 z-20">
         <div className="flex items-center justify-between px-6 py-3">
           <div className="flex items-center gap-4 flex-1">
             <Link to="/documents">
@@ -157,8 +157,7 @@ const Editor = () => {
                   onChange={(e) => setTitle(e.target.value)}
                   onBlur={handleTitleSubmit}
                   onKeyPress={(e) => e.key === 'Enter' && handleTitleSubmit()}
-                  className="border-2 border-[rgb(229,231,235)] shadow-none px-1 py-1 h-auto bg-transparent"
-                  style={{ fontSize: '1.125rem' }}
+                  className="text-lg font-medium border-none shadow-none p-1 h-auto bg-transparent"
                   autoFocus
                 />
               ) : (
@@ -175,7 +174,7 @@ const Editor = () => {
 
           <div className="flex items-center gap-3">
             {/* Read-only toggle */}
-            <div className="flex items-center gap-2 z-50" style={{ display: 'flex', visibility: 'visible' }}>
+            <div className="flex items-center gap-2">
               <Label htmlFor="readonly-toggle" className="text-sm font-medium">
                 {isReadOnly ? 'Read-only' : saving ? 'Saving...' : 'Editing'}
               </Label>
