@@ -20,6 +20,11 @@ function createWindow() {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  win.webContents.openDevTools();
+
+>>>>>>> parent of e84e96a (try)
 =======
   win.webContents.openDevTools();
 
@@ -54,7 +59,10 @@ function createWindow() {
 app.whenReady().then(() => {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of e84e96a (try)
 =======
 >>>>>>> parent of e84e96a (try)
   if (app.isPackaged) {
@@ -72,6 +80,9 @@ app.whenReady().then(() => {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of e84e96a (try)
+=======
 >>>>>>> parent of e84e96a (try)
 =======
 >>>>>>> parent of e84e96a (try)
