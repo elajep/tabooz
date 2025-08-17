@@ -11,15 +11,21 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev --prefix server\" \"electron .\"",
+<<<<<<< HEAD
     "electron-build": "npm run build && electron-builder"
+=======
+    "build:server": "esbuild server/index.js --bundle --platform=node --format=esm --outfile=dist-server/server.mjs --external:sqlite3",
+    "electron-build": "npm run build && npm install --prefix server && npm run build:server && electron-builder"
+>>>>>>> parent of e84e96a (try)
   },
   "build": {
     "appId": "com.yourcompany.marimoscribe",
     "files": [
       "dist/**/*",
+      "dist-server/**/*",
       "electron-main.cjs",
       "package.json",
-      "node_modules/**/*"
+      "server/node_modules/sqlite3/**/*"
     ],
     "icon": "build/icons/icon",
     "mac": {
@@ -101,6 +107,7 @@
     "concurrently": "^8.2.2",
     "electron": "^37.3.0",
     "electron-builder": "^26.0.12",
+    "esbuild": "^0.25.9",
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",

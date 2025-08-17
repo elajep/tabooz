@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDocuments } from '@/hooks/use-documents';
 import { getPlainTextFromTiptapJson } from '@/lib/utils';
+import { brotliDecompress } from 'zlib';
 
 const Documents = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -51,7 +52,7 @@ const Documents = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b bg-gradient-subtle">
+      <div className=" bg-gradient-subtle">
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div>
@@ -110,7 +111,7 @@ const Documents = () => {
                 to={`/editor/${document.id}`}
                 className="block transition-transform hover:scale-105"
               >
-                <Card className="h-full hover:shadow-md transition-shadow cursor-pointer border-border bg-card">
+                <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base font-medium truncate" title={document.title}>
                       {document.title}
@@ -121,9 +122,6 @@ const Documents = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="pt-0">
-                    <div className="h-16 text-sm text-muted-foreground line-clamp-3">
-                      {getPlainTextFromTiptapJson(document.content) || 'Click to open and edit this document...'}
-                    </div>
                   </CardContent>
                 </Card>
               </Link>
