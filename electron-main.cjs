@@ -1,8 +1,11 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const http = require('http');
+const { fork } = require('child_process');
 
 const viteDevServerUrl = 'http://localhost:8080';
+
+let serverProcess;
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -15,10 +18,11 @@ function createWindow() {
     },
   });
 
+  win.webContents.openDevTools();
+
   if (app.isPackaged) {
     // Load the production build of your web app
-    win.loadFile(path.join(__dirname, '../dist/index.html'));
-    // win.webContents.openDevTools(); // Removed as per user's request
+    win.loadFile(path.join(__dirname, 'dist/index.html'));
   } else {
     // Function to check if Vite server is ready
     const checkViteServer = () => {
@@ -26,7 +30,6 @@ function createWindow() {
         if (res.statusCode === 200) {
           console.log('Vite server is ready, loading URL...');
           win.loadURL(viteDevServerUrl);
-          // win.webContents.openDevTools(); // Removed as per user's request
         } else {
           console.log('Vite server not ready, retrying...');
           setTimeout(checkViteServer, 1000);
@@ -41,6 +44,20 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  if (app.isPackaged) {
+    // Start the backend server in production
+    const serverPath = path.join(__dirname, 'dist-server', 'server.mjs');
+    serverProcess = fork(serverPath, [], {
+      stdio: 'pipe' // Pipe stdout/stderr to the main process
+    });
+    serverProcess.stdout.on('data', (data) => {
+      console.log(`Server stdout: ${data}`);
+    });
+    serverProcess.stderr.on('data', (data) => {
+      console.error(`Server stderr: ${data}`);
+    });
+  }
+
   createWindow();
 
   app.on('activate', () => {
@@ -53,5 +70,13 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
+  }
+});
+
+app.on('will-quit', () => {
+  // Kill the server process when the app is about to quit
+  if (serverProcess) {
+    console.log('Killing server process...');
+    serverProcess.kill();
   }
 });

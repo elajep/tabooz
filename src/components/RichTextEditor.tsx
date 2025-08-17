@@ -53,14 +53,14 @@ interface RichTextEditorProps {
 }
 
 const highlightColors = [
-  { name: 'Red', value: '#f5545fff', class: 'bg-notion-red' },
-  { name: 'Orange', value: '#FF981F', class: 'bg-notion-orange' },
-  { name: 'Yellow', value: '#FFEA29', class: 'bg-notion-yellow' },
-  { name: 'Green', value: '#83EB4A', class: 'bg-notion-green' },
-  { name: 'Blue', value: '#60DDFD', class: 'bg-notion-blue' },
-  { name: 'Purple', value: '#C263FA', class: 'bg-notion-purple' },
-  { name: 'Pink', value: '#FAA0E2', class: 'bg-notion-pink' },
-  { name: 'Gray', value: '#B2B2B2', class: 'bg-notion-gray' },
+  { name: 'Red', value: '#f5545fCC', class: 'bg-notion-red' },
+  { name: 'Orange', value: '#FF981FCC', class: 'bg-notion-orange' },
+  { name: 'Yellow', value: '#FFEA29CC', class: 'bg-notion-yellow' },
+  { name: 'Green', value: '#83EB4ACC', class: 'bg-notion-green' },
+  { name: 'Blue', value: '#60DDFDCC', class: 'bg-notion-blue' },
+  { name: 'Purple', value: '#C263FACC', class: 'bg-notion-purple' },
+  { name: 'Pink', value: '#FAA0E2CC', class: 'bg-notion-pink' },
+  { name: 'Gray', value: '#B2B2B2CC', class: 'bg-notion-gray' },
 ];
 
 const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }: RichTextEditorProps) => {
@@ -128,19 +128,24 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
     },
   });
 
-  // Update editor content when content prop changes
   useEffect(() => {
-    if (editor && content) {
+    if (editor && content && JSON.stringify(editor.getJSON()) !== content) {
       try {
         const parsedContent = JSON.parse(content);
-        if (JSON.stringify(editor.getJSON()) !== content) {
-          editor.commands.setContent(parsedContent);
-        }
+        editor.commands.setContent(parsedContent, false);
       } catch (e) {
-        console.warn('Failed to update editor content:', e);
+        console.warn('Failed to parse and set content:', e);
       }
     }
   }, [content, editor]);
+
+  useEffect(() => {
+    if (editor) {
+      editor.setOptions({
+        editable: !readOnly,
+      });
+    }
+  }, [readOnly, editor]);
 
   if (!editor) {
     return null;
@@ -359,10 +364,10 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                 <div className="mb-2 text-sm font-medium">Insert Code Block</div>
                 <div className="space-y-2">
                   <Select value={codeLanguage} onValueChange={setCodeLanguage}>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-white">
                       <SelectValue placeholder="Select language" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       <SelectItem value="javascript">JavaScript</SelectItem>
                       <SelectItem value="typescript">TypeScript</SelectItem>
                       <SelectItem value="python">Python</SelectItem>
@@ -390,10 +395,10 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                 <Calculator className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-80">
+            <DropdownMenuContent className="w-80 p-2 bg-background border rounded-lg shadow-lg">
               <div className="p-3">
                 <div className="mb-2 text-sm font-medium">Insert Equation</div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 p-2 rounded-md bg-muted/50 border">
                   <Input
                     placeholder="LaTeX equation (e.g., E = mc^2)"
                     value={equationInput}
@@ -403,8 +408,9 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                         addEquation();
                       }
                     }}
+                    className="border-input bg-transparent focus:ring-0"
                   />
-                  <Button onClick={addEquation} size="sm">
+                  <Button onClick={addEquation} size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
                     Add
                   </Button>
                 </div>
@@ -461,7 +467,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       </div>
 
       {/* Editor Content */}
-      <div className="min-h-[500px]">
+      <div className="min-h-[500px]" id="printable-area">
         <EditorContent editor={editor} />
       </div>
     </div>
