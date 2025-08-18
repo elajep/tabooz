@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useDocuments } from '@/hooks/use-documents';
 import { getPlainTextFromTiptapJson } from '@/lib/utils';
-import { brotliDecompress } from 'zlib';
+
 
 const Documents = () => {
   const [searchQuery, setSearchQuery] = useState('');
