@@ -1,7 +1,9 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "marimo-scribe",
+  "description": "A markdown editor for marimo.",
+  "author": "Alessandro Pejretti",
+  "version": "0.0.1",
   "private": true,
-  "version": "0.0.0",
   "main": "electron-main.cjs",
   "type": "module",
   "scripts": {
@@ -11,25 +13,30 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev --prefix server\" \"electron .\"",
-    "build:server": "esbuild server/index.js --bundle --platform=node --format=esm --outfile=dist-server/server.mjs --external:sqlite3",
-    "electron-build": "npm run build && npm install --prefix server && npm run build:server && electron-builder"
+    "build:server": "esbuild server/index.js --bundle --platform=node --format=esm --outfile=dist-server/server.mjs --external:sqlite3 --external:express --external:cors --external:uuid",
+    "electron-build": "npm run build && npm run build:server && electron-builder"
   },
   "build": {
-    "appId": "com.yourcompany.marimoscribe",
+    "appId": "com.example.marimo-scribe",
+    "productName": "marimo-scribe",
     "files": [
       "dist/**/*",
-      "dist-server/**/*",
-      "electron-main.cjs",
-      "package.json",
-      "server/node_modules/sqlite3/**/*"
+      "electron-main.cjs"
     ],
-    "icon": "build/icons/icon",
-    "mac": {
-      "category": "public.app-category.productivity"
-    },
-    "directories": {
-      "output": "release"
-    }
+    "extraResources": [
+      {
+        "from": "dist-server",
+        "to": "dist-server"
+      },
+      {
+        "from": "/usr/local/bin/node",
+        "to": "bin/node"
+      },
+      {
+        "from": "server/node_modules",
+        "to": "dist-server/node_modules"
+      }
+    ]
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
