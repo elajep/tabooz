@@ -50,7 +50,7 @@ const Documents = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-8">
       {/* Header */}
       <div className=" bg-gradient-subtle">
         <div className="max-w-7xl mx-auto px-6 py-6">

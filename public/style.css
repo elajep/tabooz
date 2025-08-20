@@ -39,9 +39,9 @@ body {
    HEADINGS
 ========================= */
 h1, .ProseMirror h1 {
-  font-size: 3rem;
-  font-weight: 700;
-  margin: 5rem 0 0.5rem;
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin: 0.7rem 0 0.5rem;
 }
 
 h2, .ProseMirror h2 {
@@ -78,11 +78,6 @@ a {
   border-radius: 16px;
 }
 
-a:hover {
-  color: #2eff09b0;
-  border-radius: 16px;
-  border: none;
-}
 
 /* =========================
    BUTTONS
@@ -99,9 +94,7 @@ button {
 p code {
   font-family: var(--font-mono) !important;
   font-size: 1rem !important;
-  font-weight: 400;
-  padding: 0.3rem;
-  border-radius: 8px;
+  font-weight: 100 !important;
 }
 
 /* =========================
