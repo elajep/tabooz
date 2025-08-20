@@ -10,7 +10,7 @@
 :root {
   --back_color: #ffffff;
   --back_color_tran: #ffffff4b;
-  --text_color: #374151;
+  --text_color: #121212;
   --text_color_tran: #12121220;
   --primary_color: #6200EE;
   --primary_color_tran: #6300ee19;
@@ -43,6 +43,12 @@ h1, h2, h3, h4, h5, h6, p, ul, ol, li, pre, blockquote, figure, table, dl, dd {
   padding: 0;
 }
 
+/* Tiptap/Prose related styles */
+.ProseMirror {
+  min-height: 200px;
+  outline: none;
+  color: #333; /* Set default text color to dark gray */
+}
 
 .ProseMirror p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
@@ -52,6 +58,16 @@ h1, h2, h3, h4, h5, h6, p, ul, ol, li, pre, blockquote, figure, table, dl, dd {
   height: 0;
 }
 
+
+
+/* Inline Code */
+code {
+  background-color: transparent;
+  padding: 0.2em 0.4em;
+  border-radius: 0.2em;
+  font-size: 1rem;
+  color: black; /* Ensure inline code inherits color */
+}
 
 /* Attempt to remove quotes/extra content from inline code */
 code::before,
@@ -67,7 +83,7 @@ code::after {
   /* margin: 1rem 0; */ /* Removed margins */
   /* background-color: #f9f9f9; */ /* Removed background */
   overflow-x: auto;
-  font-size: 1rem; /* Specific font size for equations */
+  font-size: 1.1rem; /* Specific font size for equations */
 }
 
 .math-block-wrapper:hover {
@@ -77,15 +93,11 @@ code::after {
 /* Lists */
 ul,
 ol {
-  font-size: 1rem;
   padding-left: 1.5rem;
-  line-height: 1 !important;
 }
 
 li {
-  font-size: 1rem;
   margin-bottom: 0.5rem;
-  line-height: 1 !important;
 }
 
 /* Define CSS variable for light code block background */
@@ -97,10 +109,10 @@ pre {
   background: var(--code-light-bg) !important; 
   padding: 1rem !important; 
   border-radius: 0.5rem;
-  font-size: 1.05rem !important;
+  font-size: 1.05rem !important; /* Large font size */
   overflow-x: auto;
-  margin: 0;
-  line-height: 1.3 !important;
+  margin: 0; /* Removed margins */
+  line-height: 1.5 !important;
 }
 
 pre code {

@@ -174,7 +174,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
   return (
     <div className={`bg-editor-bg ${className}`}>
       {/* Toolbar */}
-      <div className="border-b bg-background shadow-sm backdrop-blur-sm fixed top-[91px] left-0 right-0 z-10">
+      <div className="border-b bg-background shadow-sm backdrop-blur-sm fixed top-14 left-0 right-0 z-10">
         <div className="flex items-center gap-1 p-2 flex-wrap max-w-screen-lg mx-auto justify-center">
           {/* Text Formatting */}
           <ToolbarButton
@@ -434,9 +434,8 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
         </div>
       </div>
 
-
       {/* Editor Content */}
-      <div className="min-h-[200px]" id="printable-area">
+      <div className="min-h-[500px]" id="printable-area">
         <EditorContent editor={editor} />
       </div>
     </div>
