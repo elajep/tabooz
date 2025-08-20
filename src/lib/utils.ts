@@ -5,32 +5,46 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-// Helper function to extract plain text from Tiptap JSON content
 export function getPlainTextFromTiptapJson(jsonContent: string | null): string {
-  if (!jsonContent) {
-    return "";
-  }
+  if (!jsonContent) return "";
+
+  let plainText = "";
+
+  const traverse = (node: any) => {
+    if (!node) return;
+
+    if (node.type === "text" && typeof node.text === "string") {
+      plainText += node.text + " ";
+    }
+
+    if (Array.isArray(node.content)) {
+      node.content.forEach(traverse);
+    }
+  };
 
   try {
-    const content = JSON.parse(jsonContent);
-    let plainText = "";
+    let doc: any = jsonContent;
 
-    function extractText(node: any) {
-      if (node.type === "text" && node.text) {
-        plainText += node.text;
-      }
-      if (node.content && Array.isArray(node.content)) {
-        node.content.forEach(extractText);
-      }
+    // 1. Se è stringa, parse
+    if (typeof doc === "string") {
+      doc = JSON.parse(doc);
     }
 
-    if (content.type === "doc" && content.content && Array.isArray(content.content)) {
-      content.content.forEach(extractText);
+    // 2. Se dopo il parse è ANCORA una stringa (doppia serializzazione), parse di nuovo
+    if (typeof doc === "string") {
+      doc = JSON.parse(doc);
     }
 
-    return plainText.trim();
+    // 3. Ora dovremmo avere l’oggetto Tiptap
+    if (doc.type === "doc" && Array.isArray(doc.content)) {
+      doc.content.forEach(traverse);
+    } else {
+      traverse(doc);
+    }
   } catch (error) {
     console.error("Error parsing Tiptap JSON content:", error);
-    return "Invalid content format"; // Fallback for malformed JSON
+    return "Invalid content format";
   }
+
+  return plainText.trim();
 }

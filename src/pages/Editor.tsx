@@ -157,13 +157,13 @@ const Editor = () => {
                   onChange={(e) => setTitle(e.target.value)}
                   onBlur={handleTitleSubmit}
                   onKeyPress={(e) => e.key === 'Enter' && handleTitleSubmit()}
-                  className="border-2 border-[rgb(229,231,235)] shadow-none px-1 py-1 h-auto bg-transparent"
-                  style={{ fontSize: '1.125rem' }}
+                  className="border-2 border-[#374151] shadow-none px-[15px] py-[6px] h-auto bg-transparent rounded-full"
+                  style={{ fontSize: '1.125rem', color: '#374151' }}
                   autoFocus
                 />
               ) : (
                 <h1 
-                  className="text-lg font-medium text-foreground cursor-text hover:bg-hover px-1 py-1 rounded transition-colors truncate"
+                  className="text-lg font-medium text-foreground cursor-text hover:bg-hover px-[20px] py-1 rounded transition-colors truncate"
                   onClick={() => setIsEditingTitle(true)}
                   title={title}
                 >
@@ -174,25 +174,22 @@ const Editor = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Read-only toggle */}
-            <div className="flex items-center gap-2 z-50" style={{ display: 'flex', visibility: 'visible' }}>
-              <Label htmlFor="readonly-toggle" className="text-sm font-medium">
-                {isReadOnly ? 'Read-only' : saving ? 'Saving...' : 'Editing'}
-              </Label>
-              <Switch
-                id="readonly-toggle"
-                checked={isReadOnly}
-                onCheckedChange={setIsReadOnly}
-              />
-            </div>
+            {/* Read-only button */}
+            <Button
+              size="sm"
+              onClick={() => setIsReadOnly(!isReadOnly)}
+              className="bg-[#018786] text-white hover:bg-[#52a5a5] p-[21px] rounded-full"
+            >
+              {isReadOnly ? 'Read-only mode' : saving ? 'Saving' : 'Editing mode'}
+            </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
+                <Button size="sm">
                   <MoreHorizontal className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="p-[15px] border rounded-[10px]">
                 <DropdownMenuItem onClick={() => setIsEditingTitle(true)}>
                   Rename document
                 </DropdownMenuItem>
@@ -202,8 +199,8 @@ const Editor = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
                   onClick={handleDelete}
-                  className="text-destructive focus:text-destructive"
-                >
+                  className="bg-[#c00144] hover:bg-red-700 p-[10px] rounded-[10px] text-white center"
+>
                   Delete document
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -213,13 +210,15 @@ const Editor = () => {
       </div>
 
       {/* Editor */}
-      <div className="max-w-4xl mx-auto pt-[160px]">
-        <RichTextEditor
-          content={content}
-          onChange={handleContentChange}
-          readOnly={isReadOnly}
-          className="min-h-screen"
-        />
+      <div className="flex justify-center pt-[160px]">
+        <div className="max-w-4xl w-full">
+          <RichTextEditor
+            content={content}
+            onChange={handleContentChange}
+            readOnly={isReadOnly}
+            className="min-h-screen"
+          />
+        </div>
       </div>
     </div>
   );

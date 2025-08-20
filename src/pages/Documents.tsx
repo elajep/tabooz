@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Plus, FileText, Search, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { useDocuments } from '@/hooks/use-documents';
 import { getPlainTextFromTiptapJson } from '@/lib/utils';
 
@@ -50,7 +50,7 @@ const Documents = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-8">
+    <div className="min-h-screen bg-background pt-8 px-[20px] py-[20px]">
       {/* Header */}
       <div className=" bg-gradient-subtle">
         <div className="max-w-7xl mx-auto px-6 py-6">
@@ -68,14 +68,14 @@ const Documents = () => {
           </div>
           
           {/* Search */}
-          <div className="mt-6 max-w-md">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <div className="mt-6 max-w-md border-2 border-[#374151] rounded-full">
+            <div className="relative rounded-full">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 rounded-full" />
               <Input
                 placeholder="Search documents..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-background"
+                className="pl-10 bg-background rounded-full"
               />
             </div>
           </div>
@@ -109,20 +109,21 @@ const Documents = () => {
               <Link
                 key={document.id}
                 to={`/editor/${document.id}`}
-                className="block transition-transform hover:scale-105"
+                className="block transition-transform hover:scale-105 border-2"
               >
-                <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
+                <Card className="h-full hover:shadow-md transition-shadow cursor-pointer flex flex-col">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-base font-medium truncate" title={document.title}>
                       {document.title}
                     </CardTitle>
-                    <CardDescription className="flex items-center text-xs">
-                      <Calendar className="w-3 h-3 mr-1" />
-                      {formatDate(document.updated_at)}
-                    </CardDescription>
                   </CardHeader>
-                  <CardContent className="pt-0">
+                  <CardContent className="pt-0 flex-grow">
+                    <p className="text-sm text-gray-500 line-clamp-3">
+                      {getPlainTextFromTiptapJson(document.content).substring(0, 150)}
+                    </p>
                   </CardContent>
+                  <CardFooter className="pt-2">
+                  </CardFooter>
                 </Card>
               </Link>
             ))}

@@ -21,6 +21,7 @@
   --orange_color_tran: #d69c312d;
   --error_color: #CF6679;
 
+
   --font-sans: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
 
@@ -30,10 +31,10 @@
 
 /* Global CSS Overrides */
 .btn-custom-primary {
-  background-color: var(--primary_color) !important; /* Example: Red background */
+  background-color: var(--secoundary_color) !important; /* Example: Red background */
   color: white !important;
-  border-radius: 0.5rem !important;
-  padding: 1.5rem 1.5rem !important;
+  border-radius: 50rem !important;
+  padding: 1.8rem 2rem !important;
 }
 
 /* Aggressive CSS Reset for common block elements */
@@ -94,7 +95,7 @@ li {
 
 pre {
   background: var(--code-light-bg) !important; 
-  padding: 0 1rem; 
+  padding: 1rem !important; 
   border-radius: 0.5rem;
   font-size: 1.05rem !important;
   overflow-x: auto;
@@ -104,4 +105,8 @@ pre {
 
 pre code {
   color: var(--text_color) !important;
+}
+
+.ProseMirror:focus {
+  outline: none;
 }

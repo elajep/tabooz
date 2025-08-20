@@ -8,6 +8,9 @@ import Image from '@tiptap/extension-image';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import TextAlign from '@tiptap/extension-text-align';
 import { createLowlight, all } from 'lowlight';
+
+
+const lowlight = createLowlight(all);
 import { useState, useEffect } from 'react';
 import { 
   Bold, 
@@ -45,6 +48,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { MathBlock } from '../extensions/MathBlock';
 import { InlineMath } from '../extensions/InlineMath';
 
+
 interface RichTextEditorProps {
   content: string;
   onChange: (content: string) => void;
@@ -68,64 +72,27 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
   const [equationInput, setEquationInput] = useState('');
   const [codeLanguage, setCodeLanguage] = useState('javascript');
 
-  const editor = useEditor({
+    const editor = useEditor({
     extensions: [
-      StarterKit.configure({
-        codeBlock: false, // We'll use CodeBlockLowlight instead
-        heading: {
-          levels: [1, 2, 3],
-          HTMLAttributes: {
-            class: 'heading-style',
-          },
-        },
+      StarterKit,
+      BulletList,
+      OrderedList,
+      Highlight.configure({ multicolor: true }),
+      Image,
+      CodeBlockLowlight.configure({
+        lowlight,
       }),
-      BulletList, // Added
-      OrderedList, // Added
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
+      MathBlock,
       InlineMath,
-      MathBlock.configure({
-        HTMLAttributes: {
-          class: 'math-block-wrapper',
-        },
-      }),
-      Highlight.configure({
-        multicolor: true,
-        HTMLAttributes: {
-          style: 'padding: 0 2px; border-radius: 3px;'
-        },
-      }),
-      Image.configure({
-        HTMLAttributes: {
-          class: 'max-w-full h-auto rounded-lg',
-        },
-      }),
-      CodeBlockLowlight.configure({
-        lowlight: createLowlight(all),
-        defaultLanguage: 'javascript',
-        HTMLAttributes: {
-                    class: 'bg-muted p-4 rounded-lg font-mono text-xs text-foreground',
-        },
-      }),
     ],
-    content: content ? (() => {
-      try {
-        return JSON.parse(content);
-      } catch (e) {
-        console.warn('Failed to parse content JSON:', e);
-        return undefined;
-      }
-    })() : undefined,
+    content: content,
     onUpdate: ({ editor }) => {
       onChange(JSON.stringify(editor.getJSON()));
     },
     editable: !readOnly,
-    editorProps: {
-      attributes: {
-        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl max-w-none focus:outline-none p-6',
-      },
-    },
   });
 
   useEffect(() => {
@@ -242,7 +209,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                 <Highlighter className="h-4 w-4" />
               </Toggle>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent className='p-[15px] border rounded-[10px]'>
               {highlightColors.map((color) => (
                 <DropdownMenuItem
                   key={color.value}
@@ -359,15 +326,15 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                 <FileCode className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-60">
+            <DropdownMenuContent className="w-60 p-[15px] border rounded-[10px]">
               <div className="p-3">
                 <div className="mb-2 text-sm font-medium">Insert Code Block</div>
                 <div className="space-y-2">
                   <Select value={codeLanguage} onValueChange={setCodeLanguage}>
-                    <SelectTrigger className="bg-white">
+                    <SelectTrigger className="bg-white rounded-[10px]">
                       <SelectValue placeholder="Select language" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white">
+                    <SelectContent className="bg-white p-[15px] border rounded-[10px]">
                       <SelectItem value="javascript">JavaScript</SelectItem>
                       <SelectItem value="typescript">TypeScript</SelectItem>
                       <SelectItem value="python">Python</SelectItem>
@@ -380,7 +347,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                       <SelectItem value="bash">Bash</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button onClick={addCodeBlock} size="sm" className="w-full">
+                  <Button onClick={addCodeBlock} size="sm" className="w-full bg-[#018786] p-[20px] rounded-[10px] text-white center hover:bg-[#52a5a5]">
                     Insert Code Block
                   </Button>
                 </div>
@@ -430,19 +397,20 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                 <ImageIcon className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-80">
+            <DropdownMenuContent className="w-[300px] p-[15px] border rounded-[10px]">
               <div className="p-3">
-                <div className="flex gap-2">
+                <div className="mb-2 text-sm font-medium">Insert Image</div>
+                <div className="bg-white p-[5px] border border-[#374151] rounded-[10px]">
                   <Input
                     placeholder="Image URL"
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && addImage()}
                   />
-                  <Button onClick={addImage} size="sm">
-                    Add
-                  </Button>
                 </div>
+                  <Button onClick={addImage} size="sm" className="w-full bg-[#018786] p-[20px] rounded-[10px] text-white center  mt-2 hover:bg-[#52a5a5]">
+                    Insert Image
+                  </Button>
               </div>
             </DropdownMenuContent>
           </DropdownMenu>

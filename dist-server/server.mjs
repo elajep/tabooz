@@ -5,13 +5,19 @@ import cors from "cors";
 import { v4 as uuidv4 } from "uuid";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import os from "os";
+import fs from "fs";
 var __filename = fileURLToPath(import.meta.url);
 var __dirname = dirname(__filename);
 var app = express();
 var port = 3001;
 app.use(cors());
 app.use(express.json());
-var dbPath = join(__dirname, "..", "database.db");
+var dbDirectory = join(os.homedir(), "Documents", "tabooz");
+if (!fs.existsSync(dbDirectory)) {
+  fs.mkdirSync(dbDirectory, { recursive: true });
+}
+var dbPath = join(dbDirectory, "database.db");
 var db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error("Error opening database", err.message);
@@ -27,7 +33,7 @@ var db = new sqlite3.Database(dbPath, (err) => {
   }
 });
 app.get("/api/documents", (req, res) => {
-  db.all("SELECT id, title, created_at FROM documents ORDER BY created_at DESC", [], (err, rows) => {
+  db.all("SELECT id, title, created_at, content FROM documents ORDER BY created_at DESC", [], (err, rows) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
