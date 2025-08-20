@@ -50,6 +50,80 @@ h1, h2, h3, h4, h5, h6, p, ul, ol, li, pre, blockquote, figure, table, dl, dd {
   color: #333; /* Set default text color to dark gray */
 }
 
+/* Custom styles for the editor content */
+.ProseMirror {
+  padding: 1rem;
+  line-height: 1.5;
+  font-size: 1rem;
+  color: var(--text_color);
+  background-color: var(--editor-bg);
+  border-radius: 0.5rem;
+  border: none; /* Explicitly remove border */
+  box-shadow: none; /* Remove box shadow that might look like a border */
+
+  /* Ensure lists and blockquotes render correctly */
+  & > * + * {
+    margin-top: 0.75em;
+  }
+
+  ul,
+  ol {
+    padding: 0 1rem;
+    margin: 1.25rem 1rem;
+
+    li {
+      margin: 0.75em 0;
+    }
+  }
+
+  ul {
+    list-style: disc;
+  }
+
+  ol {
+    list-style: decimal;
+  }
+
+  blockquote {
+    border-left: 3px solid #ccc;
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: #666;
+  }
+
+  h1, h2, h3 {
+    line-height: 1.1;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+   
+  }
+
+  h1 { font-size: 2em; font-weight: 700 !important; }
+  h2 { font-size: 1.75em; font-weight: 500 !important}
+  h3 { font-size: 1.5em; font-weight: 300 !important}
+
+
+  code {
+    background-color: rgba(97, 97, 97, 0.1);
+    color: #616161;
+  }
+
+  pre {
+    background: #0D0D0D;
+    color: #FFF;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+
+    code {
+      color: inherit;
+      padding: 0;
+      background: none;
+      font-size: 0.8rem;
+    }
+  }
+}
+
 .ProseMirror p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   float: left;
@@ -65,7 +139,7 @@ code {
   background-color: transparent;
   padding: 0.2em 0.4em;
   border-radius: 0.2em;
-  font-size: 1rem;
+  font-size: 1rem !important;
   color: black; /* Ensure inline code inherits color */
 }
 

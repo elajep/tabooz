@@ -8,6 +8,7 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    titleBarStyle: 'hidden', // Hide the title bar but keep traffic lights
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,

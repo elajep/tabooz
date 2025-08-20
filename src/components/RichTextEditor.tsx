@@ -174,7 +174,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
   return (
     <div className={`bg-editor-bg ${className}`}>
       {/* Toolbar */}
-      <div className="border-b bg-background shadow-sm backdrop-blur-sm fixed top-14 left-0 right-0 z-10">
+      <div className="border-b bg-background shadow-sm backdrop-blur-sm fixed top-14 left-0 right-0 z-10 pt-[40px]">
         <div className="flex items-center gap-1 p-2 flex-wrap max-w-screen-lg mx-auto justify-center">
           {/* Text Formatting */}
           <ToolbarButton
@@ -365,7 +365,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
             <DropdownMenuContent className="w-80 p-2 bg-background border rounded-lg shadow-lg">
               <div className="p-3">
                 <div className="mb-2 text-sm font-medium">Insert Equation</div>
-                <div className="flex gap-2 p-2 rounded-md bg-muted/50 border">
+                <div className="bg-white p-[5px] border border-[#374151] rounded-[10px]">
                   <Input
                     placeholder="LaTeX equation (e.g., E = mc^2)"
                     value={equationInput}
@@ -377,13 +377,10 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                     }}
                     className="border-input bg-transparent focus:ring-0"
                   />
-                  <Button onClick={addEquation} size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                    Add
+                </div>
+                  <Button onClick={addEquation} size="sm" className="w-full bg-[#018786] p-[20px] rounded-[10px] text-white center hover:bg-[#52a5a5] mt-2">
+                    Insert Equation
                   </Button>
-                </div>
-                <div className="mt-2 text-xs text-muted-foreground">
-                  Examples: x^2, \frac{1}{2}
-                </div>
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
