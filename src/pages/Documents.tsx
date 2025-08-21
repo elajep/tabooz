@@ -50,11 +50,11 @@ const Documents = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-8 px-[20px] py-[20px]">
+    <div className="min-h-screen bg-background px-[20px]">
       {/* Header */}
-      <div className=" bg-gradient-subtle">
+      <div className="fixed top-0 left-0 right-0 z-10 bg-gradient-subtle drag-region pt-[30px]">
         <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between no-drag">
             <div>
               <h1 className="text-3xl font-semibold text-foreground">My Documents</h1>
               <p className="text-muted-foreground mt-1">
@@ -68,7 +68,7 @@ const Documents = () => {
           </div>
           
           {/* Search */}
-          <div className="mt-6 max-w-md border-2 border-[#374151] rounded-full">
+          <div className="mt-6 max-w-md border-2 border-[#374151] rounded-full no-drag">
             <div className="relative rounded-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 rounded-full" />
               <Input
@@ -83,7 +83,7 @@ const Documents = () => {
       </div>
 
       {/* Documents Grid */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-6 py-8 pt-[220px]">
         {filteredDocuments.length === 0 ? (
           <div className="text-center py-12">
             <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />

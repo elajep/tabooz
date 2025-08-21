@@ -196,3 +196,11 @@ pre code {
 .ProseMirror:focus {
   outline: none;
 }
+
+.drag-region {
+  -webkit-app-region: drag;
+}
+
+.no-drag {
+  -webkit-app-region: no-drag;
+}
