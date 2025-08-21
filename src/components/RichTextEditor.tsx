@@ -10,6 +10,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import { createLowlight, all } from 'lowlight';
 
 
+
 const lowlight = createLowlight(all);
 import { useState, useEffect } from 'react';
 import { 
@@ -32,7 +33,8 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
-  AlignJustify
+  AlignJustify,
+  
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -87,6 +89,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       }),
       MathBlock,
       InlineMath,
+      
     ],
     content: content,
     onUpdate: ({ editor }) => {
@@ -286,7 +289,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
             <Quote className="h-4 w-4" />
           </ToolbarButton>
 
-          <Separator orientation="vertical" className="h-6" />
+          
 
           {/* Text Alignment */}
           <ToolbarButton
