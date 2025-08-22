@@ -2,7 +2,7 @@
   "name": "tabooz",
   "description": "A fantastic note app!",
   "author": "Alessandro Pejretti",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "main": "electron-main.cjs",
   "type": "module",
