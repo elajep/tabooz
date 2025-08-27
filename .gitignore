@@ -27,6 +27,4 @@ database.db
 text.txt
 .env
 .env.local
-.env.*.local
-.cache
-
+.env.development.local
