@@ -14,7 +14,8 @@
     "preview": "vite preview",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev --prefix server\" \"electron .\"",
     "build:server": "esbuild server/index.js --bundle --platform=node --format=esm --outfile=dist-server/server.mjs --external:sqlite3 --external:express --external:cors --external:uuid",
-    "electron-build": "npm run build && npm run build:server && electron-builder"
+    "electron-build": "npm run build && npm run build:server && electron-builder",
+    "postinstall": "npm install --prefix server"
   },
   "build": {
     "appId": "com.example.tabooz",
@@ -29,7 +30,7 @@
         "to": "dist-server"
       },
       {
-        "from": "/usr/local/bin/node",
+        "from": "/opt/homebrew/bin/node",
         "to": "bin/node"
       },
       {
