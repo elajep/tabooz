@@ -25,3 +25,6 @@ dist-ssr
 database.db
 /release/
 text.txt
+.env
+.env.local
+.env.*.local
