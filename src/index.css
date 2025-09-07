@@ -1,9 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap");
 @import "highlight.js/styles/github.css";
+html, body {
+  background-color: #FFFFFF;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
 /* =========================
    ROOT VARIABLES
 ========================= */
@@ -85,7 +91,7 @@ h1, h2, h3, h4, h5, h6, p, ul, ol, li, pre, blockquote, figure, table, dl, dd {
   }
 
   blockquote {
-    border-left: 3px solid #ccc;
+    border-left: 3px solid #018786;
     padding-left: 1rem;
     margin: 1rem 0;
     color: #666;
@@ -203,4 +209,18 @@ pre code {
 
 .no-drag {
   -webkit-app-region: no-drag;
+}
+
+p a {
+  color: var(--secoundary_color);
+  font-weight: 500;
+  font-style: italic;
+  background-color: transparent
+}
+
+p a:hover {
+  color: #01878779;
+  font-weight: 500;
+  font-style: italic;
+  background-color: transparent
 }

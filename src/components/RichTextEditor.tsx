@@ -7,6 +7,8 @@ import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import TextAlign from '@tiptap/extension-text-align';
+import Link from '@tiptap/extension-link';
+import Underline from '@tiptap/extension-underline';
 import { createLowlight, all } from 'lowlight';
 
 
@@ -34,6 +36,8 @@ import {
   AlignCenter,
   AlignRight,
   AlignJustify,
+  Link as LinkIcon,
+  Underline as UnderlineIcon,
   
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -73,6 +77,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
   const [imageUrl, setImageUrl] = useState('');
   const [equationInput, setEquationInput] = useState('');
   const [codeLanguage, setCodeLanguage] = useState('javascript');
+  const [linkUrl, setLinkUrl] = useState('');
 
     const editor = useEditor({
     extensions: [
@@ -89,6 +94,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       }),
       MathBlock,
       InlineMath,
+      Underline,
       
     ],
     content: content,
@@ -114,12 +120,33 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       editor.setOptions({
         editable: !readOnly,
       });
+
+      // Update linkUrl state when selection changes and a link is active
+      editor.on('selectionUpdate', () => {
+        if (editor.isActive('link')) {
+          setLinkUrl(editor.getAttributes('link').href);
+        } else {
+          setLinkUrl('');
+        }
+      });
     }
   }, [readOnly, editor]);
 
   if (!editor) {
     return null;
   }
+
+  const setLink = () => {
+    // empty
+    if (linkUrl === '') {
+      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+      return;
+    }
+
+    // update link
+    editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run();
+    setLinkUrl(''); // Clear the input after setting the link
+  };
 
   const addImage = () => {
     if (imageUrl) {
@@ -193,12 +220,12 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
           >
             <Italic className="h-4 w-4" />
           </ToolbarButton>
-          
+
           <ToolbarButton
-            onClick={() => editor.chain().focus().toggleStrike().run()}
-            isActive={editor.isActive('strike')}
+            onClick={() => editor.chain().focus().toggleUnderline().run()}
+            isActive={editor.isActive('underline')}
           >
-            <Strikethrough className="h-4 w-4" />
+            <UnderlineIcon className="h-4 w-4" />
           </ToolbarButton>
           
           {/* Highlight with colors */}
@@ -240,6 +267,36 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
           >
             <Code className="h-4 w-4" />
           </ToolbarButton>
+
+          <Separator orientation="vertical" className="h-6" />
+
+          {/* Link */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Toggle
+                size="sm"
+                className="h-8 w-8"
+              >
+                <LinkIcon className="h-4 w-4" />
+              </Toggle>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-[300px] p-[15px] border rounded-[10px]">
+              <div className="p-3">
+                <div className="mb-2 text-sm font-medium">Insert Link</div>
+                <div className="bg-white p-[5px] border border-[#374151] rounded-[10px]">
+                  <Input
+                    placeholder="URL"
+                    value={linkUrl}
+                    onChange={(e) => setLinkUrl(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && setLink()}
+                  />
+                </div>
+                  <Button onClick={setLink} size="sm" className="w-full bg-[#018786] p-[20px] rounded-[10px] text-white center  mt-2 hover:bg-[#52a5a5]">
+                    Insert Link
+                  </Button>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <Separator orientation="vertical" className="h-6" />
 

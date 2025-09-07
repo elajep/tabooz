@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script type="module">import { injectIntoGlobalHook } from "/@react-refresh";
+injectIntoGlobalHook(window);
+window.$RefreshReg$ = () => {};
+window.$RefreshSig$ = () => (type) => type;</script>
+
+    <script type="module" src="/@vite/client"></script>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>tabooz</title>
     <meta name="author" content="Alessandro Pejretti" />
 
     <!-- Toolbar / status bar color -->
-    <meta name="color-scheme" content="light">
-
+    <meta name="color-scheme" content="#ffffff" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
     <!-- Social share -->
     <meta property="og:title" content="tabooz" />
