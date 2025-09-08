@@ -4,7 +4,6 @@
   "author": "Alessandro Pejretti",
   "version": "1.0.0",
   "private": true,
-  
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -15,12 +14,10 @@
     "tauri": "tauri",
     "tauri dev": "tauri dev",
     "tauri build": "tauri build",
-    
     "build:server": "esbuild server/index.js --bundle --platform=node --format=esm --outfile=dist-server/server.mjs --external:sqlite3 --external:express --external:cors --external:uuid",
-    
-    "postinstall": "npm install --prefix server"
+    "postinstall": "npm install --prefix server",
+    "start-server": "node dist-server/server.mjs"
   },
-  
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-accordion": "^1.2.0",
@@ -65,8 +62,10 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
+    "cors": "^2.8.5",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.0",
+    "express": "^5.1.0",
     "highlight.js": "^11.11.1",
     "input-otp": "^1.2.4",
     "katex": "^0.16.22",
@@ -81,8 +80,10 @@
     "react-router-dom": "^6.30.1",
     "recharts": "^2.12.7",
     "sonner": "^1.5.0",
+    "sqlite3": "^5.1.7",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "uuid": "^13.0.0",
     "vaul": "^0.9.3",
     "zod": "^3.23.8"
   },

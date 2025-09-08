@@ -2,21 +2,7 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
 }
-
-.ProseMirror p[style*="text-align: justify"] {
-  text-align: justify;
-  white-space: unset;
-}
-
-
-.ProseMirror p[style*="text-align: justify"] {
-  text-align: justify;
-  hyphens: auto;
-  color: red !important;
-}
-
 
 .logo {
   height: 6em;

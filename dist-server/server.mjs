@@ -1,6 +1,5 @@
 // server/index.js
 import express from "express";
-import sqlite3 from "sqlite3";
 import cors from "cors";
 import { v4 as uuidv4 } from "uuid";
 import { fileURLToPath } from "url";
@@ -17,45 +16,58 @@ var dbDirectory = join(os.homedir(), "Documents", "tabooz");
 if (!fs.existsSync(dbDirectory)) {
   fs.mkdirSync(dbDirectory, { recursive: true });
 }
-var dbPath = join(dbDirectory, "database.db");
-var db = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error("Error opening database", err.message);
-  } else {
-    console.log("Connected to the SQLite database.");
-    db.run(`CREATE TABLE IF NOT EXISTS documents (
-      id TEXT PRIMARY KEY,
-      title TEXT,
-      content TEXT,
-      user_id TEXT, -- Keeping for schema compatibility, will be null
-      created_at TEXT
-    )`);
-  }
-});
 app.get("/api/documents", (req, res) => {
-  db.all("SELECT id, title, created_at, content FROM documents ORDER BY created_at DESC", [], (err, rows) => {
+  fs.readdir(dbDirectory, (err, files) => {
     if (err) {
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: "Failed to read documents directory" });
       return;
     }
-    res.json(rows);
+    const jsonFiles = files.filter((file) => file.endsWith(".json"));
+    const documents = [];
+    if (jsonFiles.length === 0) {
+      return res.json([]);
+    }
+    let processedFiles = 0;
+    jsonFiles.forEach((file) => {
+      const filePath = join(dbDirectory, file);
+      fs.readFile(filePath, "utf8", (readErr, data) => {
+        if (readErr) {
+          console.error(`Error reading file ${file}:`, readErr);
+        } else {
+          try {
+            const doc = JSON.parse(data);
+            documents.push(doc);
+          } catch (parseErr) {
+            console.error(`Error parsing JSON from ${file}:`, parseErr);
+          }
+        }
+        processedFiles++;
+        if (processedFiles === jsonFiles.length) {
+          documents.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+          res.json(documents);
+        }
+      });
+    });
   });
 });
 app.get("/api/documents/:id", (req, res) => {
   const { id } = req.params;
-  db.get("SELECT * FROM documents WHERE id = ?", [id], (err, row) => {
+  const filePath = join(dbDirectory, `${id}.json`);
+  fs.readFile(filePath, "utf8", (err, data) => {
     if (err) {
-      res.status(500).json({ error: err.message });
+      if (err.code === "ENOENT") {
+        res.status(404).json({ error: "Document not found" });
+      } else {
+        res.status(500).json({ error: "Failed to read document" });
+      }
       return;
     }
-    if (row && row.content) {
-      try {
-        row.content = JSON.parse(row.content);
-      } catch (parseError) {
-        console.error("Error parsing content from DB:", parseError);
-      }
+    try {
+      const doc = JSON.parse(data);
+      res.json(doc);
+    } catch (parseErr) {
+      res.status(500).json({ error: "Failed to parse document content" });
     }
-    res.json(row);
   });
 });
 app.post("/api/documents", (req, res) => {
@@ -64,52 +76,64 @@ app.post("/api/documents", (req, res) => {
     id: uuidv4(),
     title: title || "Untitled",
     content: null,
-    user_id: null,
-    // Auth is removed
     created_at: (/* @__PURE__ */ new Date()).toISOString()
   };
-  db.run(
-    `INSERT INTO documents (id, title, content, user_id, created_at) VALUES (?, ?, ?, ?, ?)`,
-    [newDocument.id, newDocument.title, newDocument.content, newDocument.user_id, newDocument.created_at],
-    function(err) {
-      if (err) {
-        res.status(500).json({ error: err.message });
-        return;
-      }
-      res.status(201).json({ id: newDocument.id });
+  if (!fs.existsSync(dbDirectory)) {
+    fs.mkdirSync(dbDirectory, { recursive: true });
+  }
+  const filePath = join(dbDirectory, `${newDocument.id}.json`);
+  fs.writeFile(filePath, JSON.stringify(newDocument, null, 2), (writeErr) => {
+    if (writeErr) {
+      console.error("Error writing document file:", writeErr);
+      res.status(500).json({ error: "Failed to create document file" });
+      return;
     }
-  );
+    res.status(201).json({ id: newDocument.id });
+  });
 });
 app.put("/api/documents/:id", (req, res) => {
   const { id } = req.params;
   const { title, content } = req.body;
-  let fields = [];
-  let placeholders = [];
-  if (title !== void 0) {
-    fields.push("title = ?");
-    placeholders.push(title);
-  }
-  if (content !== void 0) {
-    fields.push("content = ?");
-    placeholders.push(JSON.stringify(content));
-  }
-  if (fields.length === 0) {
-    return res.status(400).json({ error: "No fields to update" });
-  }
-  placeholders.push(id);
-  db.run(`UPDATE documents SET ${fields.join(", ")} WHERE id = ?`, placeholders, function(err) {
-    if (err) {
-      res.status(500).json({ error: err.message });
+  const filePath = join(dbDirectory, `${id}.json`);
+  fs.readFile(filePath, "utf8", (readErr, data) => {
+    if (readErr) {
+      if (readErr.code === "ENOENT") {
+        res.status(404).json({ error: "Document not found" });
+      } else {
+        res.status(500).json({ error: "Failed to read document for update" });
+      }
       return;
     }
-    res.status(200).json({ message: "Document updated" });
+    try {
+      const doc = JSON.parse(data);
+      if (title !== void 0) {
+        doc.title = title;
+      }
+      if (content !== void 0) {
+        doc.content = content;
+      }
+      fs.writeFile(filePath, JSON.stringify(doc, null, 2), (writeErr) => {
+        if (writeErr) {
+          res.status(500).json({ error: "Failed to write updated document" });
+          return;
+        }
+        res.status(200).json({ message: "Document updated" });
+      });
+    } catch (parseErr) {
+      res.status(500).json({ error: "Failed to parse existing document content" });
+    }
   });
 });
 app.delete("/api/documents/:id", (req, res) => {
   const { id } = req.params;
-  db.run("DELETE FROM documents WHERE id = ?", [id], function(err) {
-    if (err) {
-      res.status(500).json({ error: err.message });
+  const filePath = join(dbDirectory, `${id}.json`);
+  fs.unlink(filePath, (unlinkErr) => {
+    if (unlinkErr) {
+      if (unlinkErr.code === "ENOENT") {
+        res.status(404).json({ error: "Document not found" });
+      } else {
+        res.status(500).json({ error: "Failed to delete document file" });
+      }
       return;
     }
     res.status(200).json({ message: "Document deleted" });

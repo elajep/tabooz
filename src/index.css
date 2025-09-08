@@ -38,7 +38,7 @@ html, body {
 /* Global CSS Overrides */
 .btn-custom-primary {
   background-color: var(--secoundary_color) !important; /* Example: Red background */
-  color: rgb(255, 0, 0) !important;
+  color: white !important;
   border-radius: 50rem !important;
   padding: 1.8rem 2rem !important;
 }
@@ -165,7 +165,7 @@ code::after {
   /* margin: 1rem 0; */ /* Removed margins */
   /* background-color: #f9f9f9; */ /* Removed background */
   overflow-x: auto;
-  font-size: 1.1rem; /* Specific font size for equations */
+  font-size: 0.9rem; /* Specific font size for equations */
 }
 
 .math-block-wrapper:hover {
@@ -199,6 +199,7 @@ pre {
 
 pre code {
   color: var(--text_color) !important;
+  font-weight: 400 !important;
 }
 
 .ProseMirror:focus {

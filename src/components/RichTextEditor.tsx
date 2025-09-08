@@ -1,4 +1,4 @@
-import '../../App.css';
+import '../App.css';
 import 'katex/dist/katex.min.css';
 import { useEditor, EditorContent } from '@tiptap/react';
 import { StarterKit } from "@tiptap/starter-kit";
