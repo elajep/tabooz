@@ -28,3 +28,4 @@ text.txt
 .env
 .env.local
 .env.development.local
+/src-tauri

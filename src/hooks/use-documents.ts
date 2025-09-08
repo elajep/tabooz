@@ -47,7 +47,7 @@ export function useDocuments() {
     try {
       const success = await documentStore.deleteDocument(id);
       if (success) {
-        await loadDocuments(); // Refresh the list
+        setDocuments(documents.filter(doc => doc.id !== id)); // Optimistic update
         toast({
           title: "Document deleted",
           description: "Your document has been successfully deleted."

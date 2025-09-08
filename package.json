@@ -4,7 +4,7 @@
   "author": "Alessandro Pejretti",
   "version": "1.0.0",
   "private": true,
-  "main": "electron-main.cjs",
+  
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,60 +12,15 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "dev:all": "concurrently \"npm run dev\" \"npm run dev --prefix server\" \"electron .\"",
+    "tauri": "tauri",
+    "tauri dev": "tauri dev",
+    "tauri build": "tauri build",
+    
     "build:server": "esbuild server/index.js --bundle --platform=node --format=esm --outfile=dist-server/server.mjs --external:sqlite3 --external:express --external:cors --external:uuid",
-    "electron-build": "npm run build && npm run build:server && npx electron-builder",
+    
     "postinstall": "npm install --prefix server"
   },
-  "build": {
-    "appId": "com.example.tabooz",
-    "productName": "tabooz",
-    "files": [
-      "dist/**/*",
-      "electron-main.cjs"
-    ],
-    "extraResources": [
-      {
-        "from": "dist-server",
-        "to": "dist-server"
-      },
-      {
-        "from": "/opt/homebrew/bin/node",
-        "to": "bin/node"
-      },
-      
-      {
-        "from": "server/node_modules",
-        "to": "dist-server/node_modules"
-      }
-    ],
-    "mac": {
-      "icon": "build_assets/icon.icns"
-    },
-    "win": {
-      "icon": "build_assets/icon.ico"
-    },
-    "linux": {
-      "icon": "build_assets/icon.png"
-    },
-    "dmg": {
-      "background": "build_assets/dmg-background.png",
-      "iconSize": 80,
-      "contents": [
-        {
-          "x": 410,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        },
-        {
-          "x": 130,
-          "y": 150,
-          "type": "file"
-        }
-      ]
-    }
-  },
+  
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-accordion": "^1.2.0",
@@ -140,8 +95,6 @@
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.20",
     "concurrently": "^8.2.2",
-    "electron": "37.3.0",
-    "electron-builder": "^26.0.12",
     "esbuild": "^0.25.9",
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",

@@ -1,4 +1,13 @@
+@page {
+  margin: 0;
+}
+
 @media print {
+  body, html {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
   body * {
     visibility: hidden;
   }
@@ -8,6 +17,16 @@
   }
 
   #printable-area {
-    margin: 0 auto;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 1cm; /* Adjust this padding as needed */
+    box-sizing: border-box;
+  }
+
+  .katex-display {
+    font-size: 0.8em !important;
   }
 }

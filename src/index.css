@@ -38,7 +38,7 @@ html, body {
 /* Global CSS Overrides */
 .btn-custom-primary {
   background-color: var(--secoundary_color) !important; /* Example: Red background */
-  color: white !important;
+  color: rgb(255, 0, 0) !important;
   border-radius: 50rem !important;
   padding: 1.8rem 2rem !important;
 }
@@ -110,6 +110,8 @@ h1, h2, h3, h4, h5, h6, p, ul, ol, li, pre, blockquote, figure, table, dl, dd {
 
 
   code {
+    font-size: 0.9rem !important;
+    font-weight: 600;
     background-color: rgba(97, 97, 97, 0.1);
     color: #616161;
   }
@@ -145,7 +147,7 @@ code {
   background-color: transparent;
   padding: 0.2em 0.4em;
   border-radius: 0.2em;
-  font-size: 1rem !important;
+  font-size: 0.9rem !important;
   color: black; /* Ensure inline code inherits color */
 }
 

@@ -198,7 +198,7 @@ const Editor = () => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
-                  onClick={handleDelete}
+                  onSelect={handleDelete}
                   className="bg-[#c00144] hover:bg-red-700 p-[10px] rounded-[10px] text-white center"
 >
                   Delete document

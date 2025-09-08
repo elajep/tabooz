@@ -1,18 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, FileText, Search, Calendar } from 'lucide-react';
+import { Plus, FileText, Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { useDocuments } from '@/hooks/use-documents';
 import { getPlainTextFromTiptapJson } from '@/lib/utils';
-
 
 const Documents = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-  const { documents, loading, createDocument } = useDocuments();
-
+  const { documents, loading, createDocument, deleteDocument } = useDocuments();
 
   const handleCreateDocument = async () => {
     const newDoc = await createDocument();
@@ -21,22 +19,15 @@ const Documents = () => {
     }
   };
 
+  const handleDelete = async (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    await deleteDocument(id);
+  };
+
   const filteredDocuments = documents.filter(doc =>
     (doc.title || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) {
-      return ''; // Return empty string for invalid date
-    }
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date);
-  };
 
   if (loading) {
     return (
@@ -106,26 +97,35 @@ const Documents = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filteredDocuments.map((document) => (
-              <Link
-                key={document.id}
-                to={`/editor/${document.id}`}
-                className="block transition-transform hover:scale-105 border-2"
-              >
-                <Card className="h-full hover:shadow-md transition-shadow cursor-pointer flex flex-col">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-base font-medium truncate" title={document.title}>
-                      {document.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0 flex-grow">
-                    <p className="text-sm text-gray-500 line-clamp-3">
-                      {getPlainTextFromTiptapJson(document.content).substring(0, 150)}
-                    </p>
-                  </CardContent>
-                  <CardFooter className="pt-2">
-                  </CardFooter>
-                </Card>
-              </Link>
+              <div key={document.id} className="relative">
+                <Link
+                  to={`/editor/${document.id}`}
+                  className="block transition-transform hover:scale-105 border-2 h-full"
+                >
+                  <Card className="h-full hover:shadow-md transition-shadow cursor-pointer flex flex-col">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base font-medium truncate" title={document.title}>
+                        {document.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0 flex-grow">
+                      <p className="text-sm text-gray-500 line-clamp-3">
+                        {getPlainTextFromTiptapJson(document.content).substring(0, 150)}
+                      </p>
+                    </CardContent>
+                    <CardFooter className="pt-2">
+                    </CardFooter>
+                  </Card>
+                </Link>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-4 right-4 h-6 w-6 text-muted-foreground hover:text-foreground"
+                  onClick={(e) => handleDelete(e, document.id)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             ))}
           </div>
         )}
