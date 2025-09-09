@@ -104,11 +104,14 @@ const Editor = () => {
   };
 
   const handleDelete = async () => {
-    if (document && window.confirm('Are you sure you want to delete this document?')) {
+    console.log('handleDelete called. Document:', document);
+    if (document) {
       const success = await deleteDocument();
       if (success) {
         navigate('/documents');
       }
+    } else {
+      console.error('Document is null or undefined when handleDelete was called.');
     }
   };
 
@@ -198,7 +201,7 @@ const Editor = () => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
-                  onSelect={handleDelete}
+                  onClick={handleDelete}
                   className="bg-[#c00144] hover:bg-red-700 p-[10px] rounded-[10px] text-white center"
 >
                   Delete document

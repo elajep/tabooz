@@ -117,14 +117,7 @@ const Documents = () => {
                     </CardFooter>
                   </Card>
                 </Link>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute top-4 right-4 h-6 w-6 text-muted-foreground hover:text-foreground"
-                  onClick={(e) => handleDelete(e, document.id)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+                
               </div>
             ))}
           </div>

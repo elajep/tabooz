@@ -14,9 +14,9 @@
     "tauri": "tauri",
     "tauri dev": "tauri dev",
     "tauri build": "tauri build",
-    "build:server": "esbuild server/index.js --bundle --platform=node --format=esm --outfile=dist-server/server.mjs --external:sqlite3 --external:express --external:cors --external:uuid",
+    "build:server": "echo 'No esbuild for server, bundling directly.'",
     "postinstall": "npm install --prefix server",
-    "start-server": "node dist-server/server.mjs"
+    "start-server": "node server/index.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
