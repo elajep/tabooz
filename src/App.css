@@ -39,3 +39,14 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Resizable image */
+.resizable-image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.resizable-image-container.selected {
+  outline-offset: 0px;
+}
+

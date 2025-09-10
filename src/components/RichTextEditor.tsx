@@ -5,14 +5,13 @@ import { StarterKit } from "@tiptap/starter-kit";
 import BulletList from "@tiptap/extension-bullet-list";
 import OrderedList from "@tiptap/extension-ordered-list";
 import Highlight from '@tiptap/extension-highlight';
-import Image from '@tiptap/extension-image';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import TextAlign from '@tiptap/extension-text-align';
 import Link from '@tiptap/extension-link';
 import Underline from '@tiptap/extension-underline';
 import { createLowlight, all } from 'lowlight';
-
-
+import { ResizableImage } from '../extensions/ResizableImage';
+import { ImageAlign } from '../extensions/ImageAlign';
 
 const lowlight = createLowlight(all);
 import { useState, useEffect } from 'react';
@@ -39,7 +38,6 @@ import {
   AlignJustify,
   Link as LinkIcon,
   Underline as UnderlineIcon,
-  
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -80,13 +78,14 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
   const [codeLanguage, setCodeLanguage] = useState('javascript');
   const [linkUrl, setLinkUrl] = useState('');
 
-    const editor = useEditor({
+  const editor = useEditor({
     extensions: [
       StarterKit,
       BulletList,
       OrderedList,
       Highlight.configure({ multicolor: true }),
-      Image,
+      ResizableImage,
+      ImageAlign,
       CodeBlockLowlight.configure({
         lowlight,
       }),
@@ -96,7 +95,6 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       MathBlock,
       InlineMath,
       Underline,
-      
     ],
     content: content,
     onUpdate: ({ editor }) => {
@@ -108,8 +106,10 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
   useEffect(() => {
     if (editor && content && JSON.stringify(editor.getJSON()) !== content) {
       try {
-        const parsedContent = JSON.parse(content);
-        editor.commands.setContent(parsedContent, false);
+        // Defer setContent to avoid flushSync warning
+        setTimeout(() => {
+          editor.commands.setContent(JSON.parse(content), false);
+        }, 0);
       } catch (e) {
         console.warn('Failed to parse and set content:', e);
       }
@@ -122,7 +122,6 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
         editable: !readOnly,
       });
 
-      // Update linkUrl state when selection changes and a link is active
       editor.on('selectionUpdate', () => {
         if (editor.isActive('link')) {
           setLinkUrl(editor.getAttributes('link').href);
@@ -138,15 +137,13 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
   }
 
   const setLink = () => {
-    // empty
     if (linkUrl === '') {
       editor.chain().focus().extendMarkRange('link').unsetLink().run();
       return;
     }
 
-    // update link
     editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run();
-    setLinkUrl(''); // Clear the input after setting the link
+    setLinkUrl('');
   };
 
   const addImage = () => {
@@ -156,7 +153,6 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
     }
   };
 
-  // Inserisci equazione come blocco separato
   const addEquation = () => {
     if (equationInput && editor) {
       editor.chain().focus().setMathBlock(equationInput).run();
@@ -204,10 +200,8 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
   return (
     <div className={`bg-editor-bg ${className}`}>
-      {/* Toolbar */}
       <div className="border-b bg-background shadow-sm backdrop-blur-sm fixed top-14 left-0 right-0 z-10 pt-[40px]">
         <div className="flex items-center gap-1 p-2 flex-wrap max-w-screen-lg mx-auto justify-center">
-          {/* Text Formatting */}
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleBold().run()}
             isActive={editor.isActive('bold')}
@@ -229,7 +223,6 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
             <UnderlineIcon className="h-4 w-4" />
           </ToolbarButton>
           
-          {/* Highlight with colors */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Toggle
@@ -271,7 +264,6 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
           <Separator orientation="vertical" className="h-6" />
 
-          {/* Link */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Toggle
@@ -301,7 +293,6 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
           <Separator orientation="vertical" className="h-6" />
 
-          {/* Headings */}
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
             isActive={editor.isActive('heading', { level: 1 })}
@@ -325,7 +316,6 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
           <Separator orientation="vertical" className="h-6" />
 
-          {/* Lists */}
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             isActive={editor.isActive('bulletList')}
@@ -347,26 +337,49 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
             <Quote className="h-4 w-4" />
           </ToolbarButton>
 
-          
-
-          {/* Text Alignment */}
           <ToolbarButton
-            onClick={() => editor.chain().focus().setTextAlign('left').run()}
-            isActive={editor.isActive({ textAlign: 'left' })}
+            onClick={() => {
+              const { selection } = editor.state;
+              console.log('Align Left clicked. editor.state.selection:', selection);
+              if (selection.node && selection.node.type.name === 'resizable-image') {
+                editor.chain().focus().setImageAlign('left').run();
+              } else {
+                editor.chain().focus().setTextAlign('left').run();
+              }
+            }}
+            isActive={editor.isActive({ textAlign: 'left' }) || (editor.state.selection.node && editor.state.selection.node.type.name === 'resizable-image' && editor.state.selection.node.attrs.textAlign === 'left')}
           >
             <AlignLeft className="h-4 w-4" />
           </ToolbarButton>
           
           <ToolbarButton
-            onClick={() => editor.chain().focus().setTextAlign('center').run()}
-            isActive={editor.isActive({ textAlign: 'center' })}
+            onClick={() => {
+              const { selection } = editor.state;
+              console.log('Align Center clicked. editor.state.selection:', selection);
+              if (selection.node && selection.node.type.name === 'resizable-image') {
+                editor.chain().focus().setImageAlign('center').run();
+              }
+              else {
+                editor.chain().focus().setTextAlign('center').run();
+              }
+            }}
+            isActive={editor.isActive({ textAlign: 'center' }) || (editor.state.selection.node && editor.state.selection.node.type.name === 'resizable-image' && editor.state.selection.node.attrs.textAlign === 'center')}
           >
             <AlignCenter className="h-4 w-4" />
           </ToolbarButton>
           
           <ToolbarButton
-            onClick={() => editor.chain().focus().setTextAlign('right').run()}
-            isActive={editor.isActive({ textAlign: 'right' })}
+            onClick={() => {
+              const { selection } = editor.state;
+              console.log('Align Right clicked. editor.state.selection:', selection);
+              if (selection.node && selection.node.type.name === 'resizable-image') {
+                editor.chain().focus().setImageAlign('right').run();
+              }
+              else {
+                editor.chain().focus().setTextAlign('right').run();
+              }
+            }}
+            isActive={editor.isActive({ textAlign: 'right' }) || (editor.state.selection.node && editor.state.selection.node.type.name === 'resizable-image' && editor.state.selection.node.attrs.textAlign === 'right')}
           >
             <AlignRight className="h-4 w-4" />
           </ToolbarButton>
@@ -380,7 +393,6 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
           <Separator orientation="vertical" className="h-6" />
 
-          {/* Code Block */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="h-8">
@@ -416,7 +428,6 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Equation */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="h-8">
@@ -448,7 +459,6 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
           <Separator orientation="vertical" className="h-6" />
 
-          {/* Image */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="h-8">
@@ -473,9 +483,12 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
             </DropdownMenuContent>
           </DropdownMenu>
 
+          
+
+          
+
           <Separator orientation="vertical" className="h-6" />
 
-          {/* Undo/Redo */}
           <ToolbarButton
             onClick={() => editor.chain().focus().undo().run()}
             disabled={!editor.can().undo()}
@@ -492,7 +505,6 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
         </div>
       </div>
 
-      {/* Editor Content */}
       <div className="min-h-[500px]" id="printable-area">
         <EditorContent editor={editor} />
       </div>
