@@ -213,7 +213,7 @@ const Editor = () => {
       </div>
 
       {/* Editor */}
-      <div className="flex justify-center pt-[200px]">
+      <div className="flex justify-center pt-[150px]">
         <div className="max-w-4xl w-full">
           <RichTextEditor
             key={isReadOnly ? 'read-only' : 'editable'}
