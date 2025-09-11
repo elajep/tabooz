@@ -16,7 +16,9 @@
     "tauri build": "tauri build",
     "build:server": "echo 'No esbuild for server, bundling directly.'",
     "postinstall": "npm install --prefix server",
-    "start-server": "node server/index.js"
+    "start-server": "node server/index.js",
+    "build:backend": "pkg server/dist/index.cjs --targets node18-macos-arm64 --output src-tauri/bin/tabooz-backend-aarch64-apple-darwin",
+    "build:backend-esbuild": "esbuild server/index.js --bundle --platform=node --format=cjs --outfile=server/dist/index.cjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -102,6 +104,7 @@
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
     "lovable-tagger": "^1.1.7",
+    "pkg": "^5.8.1",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.11",
     "typescript": "^5.5.3",

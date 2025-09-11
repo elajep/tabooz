@@ -2,13 +2,12 @@ import express from 'express';
 
 import cors from 'cors';
 import { v4 as uuidv4 } from 'uuid';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 import os from 'os';
 import fs from 'fs';
+import { join } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// __filename and __dirname are globally available in CommonJS
+// and will be handled by esbuild's CommonJS output.
 
 const app = express();
 const port = 3001; // Using a different port from the frontend

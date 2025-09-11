@@ -1,0 +1,14 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "shell-access",
+  "description": "Capability for shell plugin access",
+  "windows": ["main"],
+  "permissions": [
+    {
+      "identifier": "shell:allow-execute",
+      "scope": [
+        "tabooz-backend"
+      ]
+    }
+  ]
+}
