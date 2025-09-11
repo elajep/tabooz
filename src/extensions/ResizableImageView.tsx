@@ -1,15 +1,16 @@
 import React, { useRef, useCallback, useEffect, useState } from 'react';
 import { NodeViewWrapper, NodeViewProps } from '@tiptap/react';
 
-export const ResizableImageView = ({ node, updateAttributes, editor }: NodeViewProps) => {
+export const ResizableImageView = ({ node, updateAttributes, editor, getPos }: NodeViewProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isResizing, setIsResizing] = useState(false);
   const [selected, setSelected] = useState(false);
 
   useEffect(() => {
     const handleSelectionUpdate = () => {
-      const isSelected = editor.isActive('resizable-image');
-      console.log('Image selected:', isSelected);
+      const { from, to } = editor.state.selection;
+      const pos = getPos();
+      const isSelected = from <= pos && to >= pos + node.nodeSize;
       setSelected(isSelected);
     };
 
@@ -19,7 +20,7 @@ export const ResizableImageView = ({ node, updateAttributes, editor }: NodeViewP
     return () => {
       editor.off('selectionUpdate', handleSelectionUpdate);
     };
-  }, [editor]);
+  }, [editor, getPos, node.nodeSize]);
 
   const handleMouseDown = useCallback(
     (event: React.MouseEvent) => {
@@ -168,6 +169,7 @@ export const ResizableImageView = ({ node, updateAttributes, editor }: NodeViewP
     ...(textAlign === 'left' && { marginLeft: '0', marginRight: 'auto' }),
     ...(textAlign === 'center' && { marginLeft: 'auto', marginRight: 'auto' }),
     ...(textAlign === 'right' && { marginLeft: 'auto', marginRight: '0' }),
+    ...(selected && { border: '2px solid #018786', borderRadius: '10px' }),
   };
 
   return (
