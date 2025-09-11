@@ -446,12 +446,12 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                 <Calculator className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-80 p-2 bg-background border rounded-lg shadow-lg">
+            <DropdownMenuContent className="w-[300px] p-[15px] border rounded-[10px]">
               <div className="p-3">
                 <div className="mb-2 text-sm font-medium">Insert Equation</div>
                 <div className="bg-white p-[5px] border border-[#374151] rounded-[10px]">
                   <Input
-                    placeholder="LaTeX equation (e.g., E = mc^2)"
+                    placeholder="eg: \sum_{i=1}^N"
                     value={equationInput}
                     onChange={(e) => setEquationInput(e.target.value)}
                     onKeyDown={(e) => {
@@ -459,7 +459,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                         addEquation();
                       }
                     }}
-                    className="border-input bg-transparent focus:ring-0"
+                    className="border-input bg-transparent focus:ring-0 red"
                   />
                 </div>
                   <Button onClick={addEquation} size="sm" className="w-full bg-[#018786] p-[20px] rounded-[10px] text-white center hover:bg-[#52a5a5] mt-2">
@@ -493,7 +493,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                   </Button>
                   <div className="text-center text-xs text-gray-500 my-1">or</div>
                   <Button onClick={() => document.getElementById('fileInput')?.click()} size="sm" className="w-full bg-[#018786] p-[20px] rounded-[10px] text-white center hover:bg-[#52a5a5]">
-                    Upload from computer
+                    From your computer
                   </Button>
                   <input
                     type="file"
@@ -528,7 +528,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
         </div>
       </div>
 
-      <div className="min-h-[500px]" id="printable-area">
+      <div className="min-h-[5000px]" id="printable-area">
         <EditorContent editor={editor} />
       </div>
     </div>

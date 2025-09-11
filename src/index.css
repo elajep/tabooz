@@ -39,7 +39,7 @@ html, body {
 .btn-custom-primary {
   background-color: var(--secoundary_color) !important; /* Example: Red background */
   color: white !important;
-  border-radius: 50rem !important;
+  border-radius: 1rem !important;
   padding: 1.8rem 2rem !important;
 }
 
@@ -222,7 +222,7 @@ p a {
 }
 
 p a:hover {
-  color: #01878779;
+  color: #01878792;
   font-weight: 500;
   font-style: italic;
   background-color: transparent

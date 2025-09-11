@@ -77,7 +77,6 @@ const Documents = () => {
       <div className="max-w-7xl mx-auto px-6 py-8 pt-[220px]">
         {filteredDocuments.length === 0 ? (
           <div className="text-center py-12">
-            <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-medium text-foreground mb-2">
               {searchQuery ? 'No documents found' : 'No documents yet'}
             </h3>
@@ -87,12 +86,6 @@ const Documents = () => {
                 : 'Create your first document to get started'
               }
             </p>
-            {!searchQuery && (
-              <Button onClick={handleCreateDocument}>
-                <Plus className="w-4 h-4 mr-2" />
-                Create Document
-              </Button>
-            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

@@ -72,7 +72,7 @@ const Editor = () => {
       } catch (error) {
         console.error('Error saving content:', error);
       }
-    }, 1300); // Salva dopo 1 secondo di inattività
+    }, 1300); // Salva dopo 1.30 secondo di inattività
   }, [updateDocument]);
 
   const handleTitleChange = async (newTitle: string) => {
@@ -181,7 +181,7 @@ const Editor = () => {
             <Button
               size="sm"
               onClick={() => setIsReadOnly(!isReadOnly)}
-              className="bg-[#018786] text-white hover:bg-[#52a5a5] p-[21px] rounded-full"
+              className="bg-[#018786] text-white hover:bg-[#52a5a5] p-[22px] rounded-[15px]"
             >
               {isReadOnly ? 'Read-only mode' : saving ? 'Saving' : 'Editing mode'}
             </Button>
@@ -196,13 +196,10 @@ const Editor = () => {
                 <DropdownMenuItem onClick={() => setIsEditingTitle(true)}>
                   Rename document
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleShare}>
-                  Copy link
-                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
                   onClick={handleDelete}
-                  className="bg-[#c00144] hover:bg-red-700 p-[10px] rounded-[10px] text-white center"
+                  className="bg-[#c00144] p-[10px] rounded-[10px] text-white center"
 >
                   Delete document
                 </DropdownMenuItem>
