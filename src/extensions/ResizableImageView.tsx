@@ -7,11 +7,21 @@ export const ResizableImageView = ({ node, updateAttributes, editor, getPos }: N
   const [selected, setSelected] = useState(false);
 
   useEffect(() => {
+    if (!editor.isEditable) {
+      setSelected(false);
+      return;
+    }
+
     const handleSelectionUpdate = () => {
       const { from, to } = editor.state.selection;
-      const pos = getPos();
-      const isSelected = from <= pos && to >= pos + node.nodeSize;
-      setSelected(isSelected);
+      try {
+        const pos = getPos();
+        const isSelected = from <= pos && to >= pos + node.nodeSize;
+        setSelected(isSelected);
+      } catch (error) {
+        console.warn('Failed to get node position:', error);
+        setSelected(false);
+      }
     };
 
     editor.on('selectionUpdate', handleSelectionUpdate);
@@ -20,7 +30,7 @@ export const ResizableImageView = ({ node, updateAttributes, editor, getPos }: N
     return () => {
       editor.off('selectionUpdate', handleSelectionUpdate);
     };
-  }, [editor, getPos, node.nodeSize]);
+  }, [editor, getPos, node.nodeSize, editor.isEditable]);
 
   const handleMouseDown = useCallback(
     (event: React.MouseEvent) => {
