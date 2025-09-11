@@ -164,6 +164,18 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
     editor.chain().focus().setCodeBlock({ language: codeLanguage }).run();
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const src = reader.result as string;
+        editor.chain().focus().setImage({ src }).run();
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const setHighlight = (color: string) => {
     editor.chain().focus().setHighlight({ color }).run();
   };
@@ -479,6 +491,17 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                   <Button onClick={addImage} size="sm" className="w-full bg-[#018786] p-[20px] rounded-[10px] text-white center  mt-2 hover:bg-[#52a5a5]">
                     Insert Image
                   </Button>
+                  <div className="text-center text-xs text-gray-500 my-1">or</div>
+                  <Button onClick={() => document.getElementById('fileInput')?.click()} size="sm" className="w-full bg-[#018786] p-[20px] rounded-[10px] text-white center hover:bg-[#52a5a5]">
+                    Upload from computer
+                  </Button>
+                  <input
+                    type="file"
+                    id="fileInput"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={handleFileChange}
+                  />
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
