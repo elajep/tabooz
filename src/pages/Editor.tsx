@@ -3,8 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
+
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -95,13 +94,6 @@ const Editor = () => {
     }
   };
 
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast({
-      title: "Link copied!",
-      description: "Document link has been copied to clipboard."
-    });
-  };
 
   const handleDelete = async () => {
     console.log('handleDelete called. Document:', document);

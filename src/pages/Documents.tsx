@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plus, FileText, Search, X } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -10,7 +10,7 @@ import { getPlainTextFromTiptapJson } from '@/lib/utils';
 const Documents = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-  const { documents, loading, createDocument, deleteDocument } = useDocuments();
+  const { documents, loading, createDocument } = useDocuments();
 
   const handleCreateDocument = async () => {
     const newDoc = await createDocument();
@@ -19,11 +19,6 @@ const Documents = () => {
     }
   };
 
-  const handleDelete = async (e: React.MouseEvent, id: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    await deleteDocument(id);
-  };
 
   const filteredDocuments = documents.filter(doc =>
     (doc.title || '').toLowerCase().includes(searchQuery.toLowerCase())

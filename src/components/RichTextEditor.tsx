@@ -7,7 +7,6 @@ import OrderedList from "@tiptap/extension-ordered-list";
 import Highlight from '@tiptap/extension-highlight';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import TextAlign from '@tiptap/extension-text-align';
-import Link from '@tiptap/extension-link';
 import Underline from '@tiptap/extension-underline';
 import { createLowlight, all } from 'lowlight';
 import { ResizableImage } from '../extensions/ResizableImage';
@@ -19,7 +18,6 @@ import {
   Bold, 
   Italic, 
   Highlighter, 
-  Strikethrough,
   Code, 
   Heading1, 
   Heading2, 
@@ -27,16 +25,16 @@ import {
   List,
   ListOrdered,
   Quote,
-  Undo,
-  Redo,
-  ImageIcon,
-  Calculator,
-  FileCode,
+  Undo2,
+  Redo2,
+  Sigma,
+  ImagePlus,
+  SquareCode,
   AlignLeft,
   AlignCenter,
   AlignRight,
   AlignJustify,
-  Link as LinkIcon,
+  Link2 as LinkIcon,
   Underline as UnderlineIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -108,7 +106,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       try {
         // Defer setContent to avoid flushSync warning
         setTimeout(() => {
-          editor.commands.setContent(JSON.parse(content), false);
+          editor.commands.setContent(JSON.parse(content));
         }, 0);
       } catch (e) {
         console.warn('Failed to parse and set content:', e);
@@ -293,7 +291,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                     placeholder="URL"
                     value={linkUrl}
                     onChange={(e) => setLinkUrl(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && setLink()}
+                    onClick={(e) => e.key === 'Enter' && setLink()}
                   />
                 </div>
                   <Button onClick={setLink} size="sm" className="w-full bg-[#018786] p-[20px] rounded-[10px] text-white center  mt-2 hover:bg-[#52a5a5]">
@@ -407,8 +405,8 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-8">
-                <FileCode className="h-4 w-4" />
+              <Button variant="outline" size="sm" className="h-8 w-8">
+                <SquareCode className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-60 p-[15px] border rounded-[10px]">
@@ -442,8 +440,8 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-8">
-                <Calculator className="h-4 w-4" />
+              <Button variant="outline" size="sm" className="h-8 w-8">
+                <Sigma className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[300px] p-[15px] border rounded-[10px]">
@@ -473,8 +471,8 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-8">
-                <ImageIcon className="h-4 w-4" />
+              <Button variant="outline" size="sm" className="h-8 w-8">
+                <ImagePlus className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[300px] p-[15px] border rounded-[10px]">
@@ -516,14 +514,14 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
             onClick={() => editor.chain().focus().undo().run()}
             disabled={!editor.can().undo()}
           >
-            <Undo className="h-4 w-4" />
+            <Undo2 className="h-4 w-4" />
           </ToolbarButton>
           
           <ToolbarButton
             onClick={() => editor.chain().focus().redo().run()}
             disabled={!editor.can().redo()}
           >
-            <Redo className="h-4 w-4" />
+            <Redo2 className="h-4 w-4" />
           </ToolbarButton>
         </div>
       </div>

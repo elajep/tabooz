@@ -2,9 +2,6 @@ import { Node, mergeAttributes } from '@tiptap/core';
 import { MathBlockView } from './MathBlockView';
 import { ReactNodeView } from './ReactNodeView';
 
-// Regex to match inline math format $...$
-const INLINE_MATH_REGEX = /\\$([^\\$]+)\\$/;
-
 export const MathBlock = Node.create({
   name: 'math-block',
   group: 'block',

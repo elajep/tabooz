@@ -1,4 +1,4 @@
-use tauri::{Manager, RunEvent, Listener};
+use tauri::Listener;
 use tauri_plugin_shell::ShellExt;
 use tauri_plugin_shell::process::CommandEvent;
 use std::sync::{Arc, Mutex};
@@ -44,7 +44,7 @@ pub fn run() {
         app_handle_clone.listen("tauri://destroyed", move |_event| { // Use app_handle_clone directly
             println!("Main window destroyed. Attempting to kill sidecar...");
             let mut child_guard = sidecar_handle_clone_for_listen.0.lock().unwrap(); // Use cloned sidecar_handle
-            if let Some(mut child) = child_guard.take() {
+            if let Some(child) = child_guard.take() {
                 if let Err(e) = child.kill() {
                     eprintln!("Failed to kill sidecar: {}", e);
                 } else {

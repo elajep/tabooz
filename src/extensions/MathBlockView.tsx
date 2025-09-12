@@ -1,5 +1,5 @@
 import katex from 'katex';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export const MathBlockView = ({ node, updateAttributes, editor }: any) => {
   const [isEditing, setIsEditing] = useState(node.attrs.latex === '');
