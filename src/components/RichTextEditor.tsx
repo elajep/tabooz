@@ -8,6 +8,7 @@ import Highlight from '@tiptap/extension-highlight';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
+import { TextAlignWithLast } from '../extensions/TextAlignWithLast';
 import { createLowlight, all } from 'lowlight';
 import { ResizableImage } from '../extensions/ResizableImage';
 import { ImageAlign } from '../extensions/ImageAlign';
@@ -75,6 +76,12 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
   const [equationInput, setEquationInput] = useState('');
   const [codeLanguage, setCodeLanguage] = useState('javascript');
   const [linkUrl, setLinkUrl] = useState('');
+  const [isSafari, setIsSafari] = useState(false);
+
+  useEffect(() => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    setIsSafari(/safari/.test(userAgent) && !/chrome/.test(userAgent));
+  }, []);
 
   const editor = useEditor({
     extensions: [
@@ -205,6 +212,11 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       <div
         className={`bg-editor-bg ${className}`}
         onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            editor.chain().focus().setTextSelection(editor.state.doc.content.size).run();
+          }
+        }}
+      >
         <EditorContent editor={editor} />
       </div>
     );
