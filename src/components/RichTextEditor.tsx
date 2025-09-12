@@ -87,7 +87,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       CodeBlockLowlight.configure({
         lowlight,
       }),
-      TextAlign.configure({
+      TextAlignWithLast.configure({
         types: ['heading', 'paragraph'],
       }),
       MathBlock,
@@ -202,7 +202,9 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
   if (readOnly) {
     return (
-      <div className={`bg-editor-bg ${className}`}>
+      <div
+        className={`bg-editor-bg ${className}`}
+        onClick={(e) => {
         <EditorContent editor={editor} />
       </div>
     );
@@ -397,6 +399,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
           <ToolbarButton
             onClick={() => editor.chain().focus().setTextAlign('justify').run()}
             isActive={editor.isActive({ textAlign: 'justify' })}
+            disabled={isSafari}
           >
             <AlignJustify className="h-4 w-4" />
           </ToolbarButton>
@@ -526,7 +529,15 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
         </div>
       </div>
 
-      <div className="min-h-[5000px]" id="printable-area">
+      <div
+        className="min-h-[5000px]"
+        id="printable-area"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            editor.chain().focus().setTextSelection(editor.state.doc.content.size).run();
+          }
+        }}
+      >
         <EditorContent editor={editor} />
       </div>
     </div>
