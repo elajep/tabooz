@@ -6,9 +6,7 @@ import BulletList from "@tiptap/extension-bullet-list";
 import OrderedList from "@tiptap/extension-ordered-list";
 import Highlight from '@tiptap/extension-highlight';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
-import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
-import { TextAlignWithLast } from '../extensions/TextAlignWithLast';
 import { createLowlight, all } from 'lowlight';
 import { ResizableImage } from '../extensions/ResizableImage';
 import { ImageAlign } from '../extensions/ImageAlign';
@@ -93,9 +91,6 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       ImageAlign,
       CodeBlockLowlight.configure({
         lowlight,
-      }),
-      TextAlignWithLast.configure({
-        types: ['heading', 'paragraph'],
       }),
       MathBlock,
       InlineMath,
