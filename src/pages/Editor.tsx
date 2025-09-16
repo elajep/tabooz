@@ -135,7 +135,7 @@ const Editor = () => {
   return (
     <div className="min-h-screen bg-editor-bg">
       {/* Header */}
-      <div className="border-b bg-background/100 fixed top-0 left-0 right-0 z-20 pt-[30px] drag-region">
+      <div className="bg-background/100 fixed top-0 left-0 right-0 z-20 pt-[30px] drag-region">
         <div className="flex items-center justify-between px-6 py-3">
           <div className="flex items-center gap-4 flex-1 no-drag">
             <Link to="/documents">

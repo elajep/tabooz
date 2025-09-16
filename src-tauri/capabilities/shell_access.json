@@ -9,6 +9,13 @@
       "scope": [
         "tabooz-backend"
       ]
+    },
+    {
+      "identifier": "shell:allow-open",
+      "scope": [
+        { "url": "https://*" },
+        { "url": "http://*" }
+      ]
     }
   ]
 }

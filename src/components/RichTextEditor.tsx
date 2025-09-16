@@ -8,8 +8,9 @@ import Highlight from '@tiptap/extension-highlight';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import Underline from '@tiptap/extension-underline';
 import { createLowlight, all } from 'lowlight';
-import { ResizableImage } from '../extensions/ResizableImage';
+import TextAlign from '@tiptap/extension-text-align';
 import { ImageAlign } from '../extensions/ImageAlign';
+import { ResizableImage } from '../extensions/ResizableImage';
 
 const lowlight = createLowlight(all);
 import { useState, useEffect } from 'react';
@@ -47,8 +48,27 @@ import {
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+  Command, 
+  CommandEmpty, 
+  CommandGroup, 
+  CommandInput, 
+  CommandItem, 
+  CommandList 
+} from '@/components/ui/command';
 import { MathBlock } from '../extensions/MathBlock';
 import { InlineMath } from '../extensions/InlineMath';
+import Heading from '@tiptap/extension-heading';
+import Link from '@tiptap/extension-link';
+
+const slugify = (str: string) =>
+  str
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 
 
 interface RichTextEditorProps {
@@ -74,7 +94,9 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
   const [equationInput, setEquationInput] = useState('');
   const [codeLanguage, setCodeLanguage] = useState('javascript');
   const [linkUrl, setLinkUrl] = useState('');
+  const [isLinkMenuOpen, setIsLinkMenuOpen] = useState(false);
   const [isSafari, setIsSafari] = useState(false);
+  const [headings, setHeadings] = useState<{ id: string; text: string; level: number }[]>([]);
 
   useEffect(() => {
     const userAgent = navigator.userAgent.toLowerCase();
@@ -84,6 +106,14 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
   const editor = useEditor({
     extensions: [
       StarterKit,
+      TextAlign.configure({
+        types: ['heading', 'paragraph', 'resizable-image'],
+      }),
+      Link.configure({
+        openOnClick: false, // We're handling clicks manually
+        autolink: true,
+        linkOnPaste: true,
+      }),
       BulletList,
       OrderedList,
       Highlight.configure({ multicolor: true }),
@@ -95,9 +125,52 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
       MathBlock,
       InlineMath,
       Underline,
+      Heading.configure({ levels: [1, 2, 3] }).extend({
+        addAttributes() {
+          return {
+            ...this.parent?.(),
+            id: {
+              default: null,
+              renderHTML: attributes => {
+                if (attributes.id) {
+                  return { id: attributes.id };
+                }
+                return {};
+              },
+              parseHTML: element => element.getAttribute('id'),
+            },
+          };
+        },
+      }),
     ],
     content: content,
     onUpdate: ({ editor }) => {
+      const transaction = editor.state.tr;
+      let modified = false;
+      const newHeadings: { id: string; text: string; level: number }[] = [];
+
+      editor.state.doc.descendants((node, pos) => {
+        if (node.type.name === 'heading' && (node.attrs.level === 1 || node.attrs.level === 2)) {
+          const id = slugify(node.textContent);
+          if (id) {
+            newHeadings.push({
+              id,
+              text: node.textContent,
+              level: node.attrs.level,
+            });
+            if (node.attrs.id !== id) {
+              transaction.setNodeMarkup(pos, undefined, { ...node.attrs, id });
+              modified = true;
+            }
+          }
+        }
+      });
+
+      if (modified) {
+        editor.view.dispatch(transaction);
+      }
+
+      setHeadings(newHeadings);
       onChange(JSON.stringify(editor.getJSON()));
     },
     editable: !readOnly,
@@ -144,6 +217,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
     editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run();
     setLinkUrl('');
+    setIsLinkMenuOpen(false);
   };
 
   const addImage = () => {
@@ -206,8 +280,26 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
     return (
       <div
         className={`bg-editor-bg ${className}`}
-        onClick={(e) => {
-          if (e.target === e.currentTarget) {
+        onClick={async (event) => {
+          const linkElement = (event.target as HTMLElement).closest('a');
+          if (linkElement) {
+            const href = linkElement.getAttribute('href');
+            if (href) {
+              if (href.startsWith('#')) {
+                event.preventDefault();
+                const id = href.substring(1);
+                const element = document.getElementById(id);
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+              } else if (href.startsWith('http')) {
+                event.preventDefault();
+                const module = '@tauri-apps/api/shell';
+                const { open } = await import(/* @vite-ignore */ module);
+                open(href);
+              }
+            }
+          } else if (event.target === event.currentTarget) {
             editor.chain().focus().setTextSelection(editor.state.doc.content.size).run();
           }
         }}
@@ -218,7 +310,32 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
   }
 
   return (
-    <div className={`bg-editor-bg ${className}`}>
+    <div 
+      className={`bg-editor-bg ${className}`}
+      onClick={async (event) => {
+        const linkElement = (event.target as HTMLElement).closest('a');
+        if (linkElement) {
+          const href = linkElement.getAttribute('href');
+          if (href) {
+            if (href.startsWith('#')) {
+              event.preventDefault();
+              event.stopPropagation();
+              const id = href.substring(1);
+              const element = document.getElementById(id);
+              if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            } else if (href.startsWith('http')) {
+              event.preventDefault();
+              event.stopPropagation();
+              const module = '@tauri-apps/api/shell';
+              const { open } = await import(/* @vite-ignore */ module);
+              open(href);
+            }
+          }
+        }
+      }}
+    >
       <div className="border-b bg-background shadow-sm backdrop-blur-sm fixed top-14 left-0 right-0 z-10 pt-[40px]">
         <div className="flex items-center gap-1 p-2 flex-wrap max-w-screen-lg mx-auto justify-center">
           <ToolbarButton
@@ -252,7 +369,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                 <Highlighter className="h-4 w-4" />
               </Toggle>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className='p-[15px] border rounded-[10px]'>
+            <DropdownMenuContent className='p-[5px] border rounded-[10px]'>
               {highlightColors.map((color) => (
                 <DropdownMenuItem
                   key={color.value}
@@ -283,30 +400,54 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
 
           <Separator orientation="vertical" className="h-6" />
 
-          <DropdownMenu>
+          <DropdownMenu open={isLinkMenuOpen} onOpenChange={setIsLinkMenuOpen}>
             <DropdownMenuTrigger asChild>
-              <Toggle
-                size="sm"
-                className="h-8 w-8"
-              >
+              <Toggle size="sm" className="h-8 w-8">
                 <LinkIcon className="h-4 w-4" />
               </Toggle>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[300px] p-[15px] border rounded-[10px]">
-              <div className="p-3">
-                <div className="mb-2 text-sm font-medium">Insert Link</div>
-                <div className="bg-white p-[5px] border border-[#374151] rounded-[10px]">
-                  <Input
-                    placeholder="URL"
-                    value={linkUrl}
-                    onChange={(e) => setLinkUrl(e.target.value)}
-                    onClick={(e) => e.key === 'Enter' && setLink()}
-                  />
-                </div>
-                  <Button onClick={setLink} size="sm" className="w-full bg-[#018786] p-[20px] rounded-[10px] text-white center  mt-2 hover:bg-[#52a5a5]">
+            <DropdownMenuContent className="w-[350px] p-[5px] border rounded-[10px]" align="start">
+              <Tabs defaultValue="external" className="w-full">
+                <TabsList className="pt-[12px] grid w-full grid-cols-2 mb-[15px]">
+                  <TabsTrigger value="external" className='data-[state=active]:bg-[#F4F4F4] rounded-[10px] ml-[6px] p-[8px]'>External Link</TabsTrigger>
+                  <TabsTrigger value="internal" className='data-[state=active]:bg-[#F4F4F4] rounded-[10px] mr-[6px] p-[8px]'>Internal Link</TabsTrigger>
+                </TabsList>
+                <TabsContent value="external" className="p-3">
+                  <div className="bg-white p-[2px] border border-[#374151] rounded-[10px] mb-[5px]">
+                    <Input
+                      placeholder="https://example.com"
+                      value={linkUrl}
+                      onChange={(e) => setLinkUrl(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && setLink()}
+                    />
+                  </div>
+                  <Button onClick={setLink} size="sm" className="w-full bg-[#018786] p-[20px] rounded-[10px] text-white center mt-2 hover:bg-[#52a5a5]">
                     Insert Link
                   </Button>
-              </div>
+                </TabsContent>
+                <TabsContent value="internal" className="p-3">
+                  <Command>
+                    <CommandList>
+                      <CommandEmpty>No headings found.</CommandEmpty>
+                      <CommandGroup>
+                        {headings.map((heading) => (
+                          <CommandItem
+                            key={heading.id}
+                            value={heading.text}
+                                                        onSelect={() => {
+                              editor.chain().focus().extendMarkRange('link').setLink({ href: `#${heading.id}` }).run();
+                              setIsLinkMenuOpen(false);
+                            }}
+                            className="flex gap-2 w-full"
+                          >
+                            <span className={heading.level === 2 ? 'p-[10px] bg-[#F4F4F4] w-full rounded-[10px] hover:bg-[#FFFFFF]' : 'p-[10px] font-bold text-[17px] bg-[#F4F4F4] w-full rounded-[10px] hover:bg-[#FFFFFF]'}>{heading.text}</span>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </TabsContent>
+              </Tabs>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -419,7 +560,7 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                 <SquareCode className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-60 p-[15px] border rounded-[10px]">
+            <DropdownMenuContent className="w-[250px] p-[5px] border rounded-[10px]">
               <div className="p-3">
                 <div className="mb-2 text-sm font-medium">Insert Code Block</div>
                 <div className="space-y-2">
@@ -454,10 +595,10 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                 <Sigma className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[300px] p-[15px] border rounded-[10px]">
+            <DropdownMenuContent className="w-[300px] p-[5px] border rounded-[10px]">
               <div className="p-3">
                 <div className="mb-2 text-sm font-medium">Insert Equation</div>
-                <div className="bg-white p-[5px] border border-[#374151] rounded-[10px]">
+                <div className="bg-white p-[2px] border border-[#374151] rounded-[10px] mb-[5px]">
                   <Input
                     placeholder="eg: \sum_{i=1}^N"
                     value={equationInput}
@@ -485,10 +626,10 @@ const RichTextEditor = ({ content, onChange, readOnly = false, className = '' }:
                 <ImagePlus className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[300px] p-[15px] border rounded-[10px]">
+            <DropdownMenuContent className="w-[300px] p-[5px] border rounded-[10px]">
               <div className="p-3">
                 <div className="mb-2 text-sm font-medium">Insert Image</div>
-                <div className="bg-white p-[5px] border border-[#374151] rounded-[10px]">
+                <div className="bg-white p-[2px] border border-[#374151] rounded-[10px] mb-[5px]">
                   <Input
                     placeholder="Image URL"
                     value={imageUrl}

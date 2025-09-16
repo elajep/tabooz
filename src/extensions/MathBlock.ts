@@ -1,4 +1,4 @@
-import { Node, mergeAttributes } from '@tiptap/core';
+import { CommandProps, Node, mergeAttributes } from '@tiptap/core';
 import { MathBlockView } from './MathBlockView';
 import { ReactNodeView } from './ReactNodeView';
 
@@ -44,25 +44,42 @@ export const MathBlock = Node.create({
 
   addCommands() {
     return {
-      setMathBlock: latex => ({ chain }) => {
-        return chain()
-          .insertContent({ type: this.name, attrs: { latex, textAlign: 'left' } })
+      setMathBlock: 
+        (latex: string) => 
+        ({ chain }: CommandProps) => {
+          return chain()
+            .insertContent({ 
+              type: this.name, 
+            })
           .run()
       },
-      updateMathBlock: (pos, latex) => ({ tr }) => {
+      
+      updateMathBlock: (pos: number, latex: string) => ({ tr }:CommandProps) => {
         const node = tr.doc.nodeAt(pos)
         return tr.setNodeMarkup(pos, undefined, { 
           ...node?.attrs,
           latex 
         })
       },
-      setMathBlockAlignment: (pos, align) => ({ tr }) => {
+     
+      setMathBlockAlignment: (pos: number, align: string) => ({ tr }: CommandProps) => {
         const node = tr.doc.nodeAt(pos)
         return tr.setNodeMarkup(pos, undefined, { 
           ...node?.attrs,
           textAlign: align 
         })
+        return true
       },
     }
   },
 })
+
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    mathBlock: {
+      setMathBlock: (latex: string) => ReturnType
+      updateMathBlock: (pos: number, latex: string) => ReturnType
+      setMathBlockAlignment: (pos: number, align: string) => ReturnType
+    }
+  }
+}

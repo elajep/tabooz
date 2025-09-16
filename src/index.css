@@ -16,6 +16,7 @@ html, body {
 :root {
   --back_color: #ffffff;
   --back_color_tran: #ffffff4b;
+  --color: #ffffff
   --text_color: #121212;
   --text_color_tran: #12121220;
   --primary_color: #6200EE;
