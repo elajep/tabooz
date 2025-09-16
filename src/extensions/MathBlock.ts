@@ -50,6 +50,7 @@ export const MathBlock = Node.create({
           return chain()
             .insertContent({ 
               type: this.name, 
+              attrs: { latex, textAlign: 'left' } 
             })
           .run()
       },
