@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 @import "highlight.js/styles/github.css";
 html, body {
   background-color: #FFFFFF;
@@ -16,8 +17,7 @@ html, body {
 :root {
   --back_color: #ffffff;
   --back_color_tran: #ffffff4b;
-  --color: #ffffff
-  --text_color: #121212;
+  --text_color: #111111;
   --text_color_tran: #12121220;
   --primary_color: #6200EE;
   --primary_color_tran: #6300ee19;
@@ -29,6 +29,7 @@ html, body {
   --error_color: #CF6679;
 
 
+  --font-text: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-sans: "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
 
@@ -105,9 +106,10 @@ h1, h2, h3, h4, h5, h6, p, ul, ol, li, pre, blockquote, figure, table, dl, dd {
    
   }
 
-  h1 { font-size: 2em; font-weight: 700 !important; }
-  h2 { font-size: 1.75em; font-weight: 500 !important}
-  h3 { font-size: 1.5em; font-weight: 300 !important}
+  h1 { font-size: 1.875em; font-weight: 700; margin-bottom: 2rem !important; }
+  h2 { font-size: 1.5em; font-weight: 500; margin-bottom: 1.5rem !important}
+  h3 { font-size: 1.25em; font-weight: 500; margin-bottom: 1rem !important}
+  p {font-size: 1rem; font-weight: 400; margin-bottom: 1rem !important}
 
 
   code {
@@ -216,15 +218,18 @@ pre code {
 }
 
 p a {
-  color: var(--secoundary_color);
-  font-weight: 500;
-  font-style: italic;
+  color: var(--text_color);
+  font-weight: 600;
   background-color: transparent
 }
 
 p a:hover {
-  color: #01878792;
-  font-weight: 500;
-  font-style: italic;
+  font-weight: 600;
+  text-decoration: underline;
   background-color: transparent
+}
+
+
+.ProseMirror {
+  font-family: "Inter", sans-serif !important;
 }
